@@ -1,11 +1,12 @@
 package api
 
 import (
-	"github.com/go-openapi/swag"
 	"net/http"
 	"storage/internal/api/models"
 	"storage/internal/api/restapi/operations"
 	"storage/internal/lib/hash"
+
+	"github.com/go-openapi/swag"
 )
 
 func (api *service) login(params operations.LoginParams) operations.LoginResponder {

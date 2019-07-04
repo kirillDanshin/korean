@@ -2,10 +2,12 @@ package db
 
 import (
 	"database/sql"
-	"github.com/pkg/errors"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
+// nolint
 var tableProduct = struct {
 	name              string
 	columnID          string
@@ -45,6 +47,7 @@ const (
 )
 
 type (
+	// Product - makeup unit.
 	Product struct {
 		ID          int            `db:"product_id"`
 		Name        string         `db:"name"`
@@ -54,7 +57,7 @@ type (
 		Avatar      sql.NullString `db:"avatar"`
 		Brand       string         `db:"brand_name"`
 	}
-
+	// NewProduct - model for creating new product in storage.
 	NewProduct struct {
 		Name        string
 		Description string
@@ -65,7 +68,7 @@ type (
 )
 
 // BrandCreate - create new brand.
-func (db *db) ProductCreate(ctx Ctx, product NewProduct) (ID int, err error) {
+func (db *db) ProductCreate(ctx Ctx, product NewProduct) (id int, err error) {
 	str := "INSERT INTO " + tableProduct.name +
 		" (" + tableProduct.columnName + "," +
 		tableProduct.columnBrandID + "," +
@@ -81,24 +84,24 @@ func (db *db) ProductCreate(ctx Ctx, product NewProduct) (ID int, err error) {
 		product.Description,
 		product.Apply,
 		product.Price,
-	).Scan(&ID)
+	).Scan(&id)
 	if err != nil {
 		return 0, errors.Wrapf(err, "failed to set new brand")
 	}
 
-	p, err := db.getProductByID(ctx, ID)
+	p, err := db.getProductByID(ctx, id)
 	if err != nil {
 		return 0, err
 	}
 
-	go func() { db.setProduct <- p }()
+	go func() { db.setProduct <- *p }()
 
-	return ID, nil
+	return id, nil
 }
 
-// TODO refactoring
-func (db *db) getProductByID(ctx Ctx, id int) (Product, error) {
-	p := Product{}
+// TODO refactoring sql query
+func (db *db) getProductByID(ctx Ctx, id int) (*Product, error) {
+	p := &Product{}
 	str := "SELECT " + tableProduct.name + "." + tableProduct.columnID +
 		"," + tableProduct.name + "." + tableProduct.columnPrice +
 		"," + tableProduct.name + "." + tableProduct.columnApply +
@@ -112,7 +115,11 @@ func (db *db) getProductByID(ctx Ctx, id int) (Product, error) {
 		" = " + tableBrand.name + ".brand_id" +
 		" WHERE product_id = $1"
 
-	return p, errors.Wrapf(db.conn.GetContext(ctx, &p, str, id), "failed to getting product by id")
+	if err := db.conn.GetContext(ctx, p, str, id); err != nil {
+		return nil, errors.Wrapf(err, "failed to getting product by id")
+	}
+
+	return p, nil
 }
 
 // ProductDelete - remove brand.
@@ -128,6 +135,7 @@ func (db *db) ProductDelete(ctx Ctx, productID int) (err error) {
 	return nil
 }
 
+// TODO refactoring sql query
 func (db *db) GetProducts(ctx Ctx, since time.Time, ch chan<- Product) error {
 	var products []Product
 	str := "SELECT " + tableProduct.name + "." + tableProduct.columnID +

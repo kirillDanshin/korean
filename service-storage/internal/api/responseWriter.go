@@ -1,8 +1,9 @@
 package api
 
 import (
-	"github.com/pkg/errors"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 type statusWriter struct {

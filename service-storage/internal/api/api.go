@@ -1,8 +1,6 @@
 package api
 
 import (
-	"github.com/go-openapi/runtime/security"
-	"github.com/go-openapi/swag"
 	"net"
 	"net/http"
 	"storage/internal/api/models"
@@ -12,6 +10,8 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/loads"
+	"github.com/go-openapi/runtime/security"
+	"github.com/go-openapi/swag"
 	"github.com/pkg/errors"
 	"github.com/powerman/structlog"
 	"golang.org/x/net/context"
@@ -26,7 +26,7 @@ type (
 		session session.Store
 		log     Log
 	}
-
+	// Storage - main store products and brands.
 	Storage interface {
 		BrandCreate(ctx Ctx, brand db.NewBrand) (ID int, err error)
 		BrandDelete(ctx Ctx, brandID int) (err error)
@@ -44,7 +44,7 @@ type (
 		Host string
 	}
 
-	// Сtx is a synonym for convenience.
+	// Ctx is a synonym for convenience.
 	Ctx = context.Context
 	// Log is a synonym for convenience.
 	Log = *structlog.Logger
@@ -86,12 +86,8 @@ func Serve(log Log, store Storage, sessionStore session.Store, cfg Configuration
 		return logger(recovery(handleCORS(handler)))
 	}
 
-	middlewares := func(handler http.Handler) http.Handler {
-		return accessLog(handler)
-	}
-
 	server := restapi.NewServer(searchAPI)
-	server.SetHandler(globalMiddleware(searchAPI.Serve(middlewares)))
+	server.SetHandler(globalMiddleware(searchAPI.Serve(accessLog)))
 	server.Port = cfg.Port
 	server.Host = cfg.Host
 

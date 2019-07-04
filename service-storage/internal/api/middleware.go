@@ -1,14 +1,15 @@
 package api
 
 import (
-	"github.com/powerman/structlog"
-	"github.com/rs/cors"
-	"github.com/sebest/xff"
 	"net"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/powerman/structlog"
+	"github.com/rs/cors"
+	"github.com/sebest/xff"
 )
 
 type middlewareFunc func(http.Handler) http.Handler
@@ -65,7 +66,7 @@ func accessLog(next http.Handler) http.Handler {
 
 		sw := statusWriter{ResponseWriter: w}
 		next.ServeHTTP(w, r)
-		duration := time.Now().Sub(start)
+		duration := time.Since(start)
 		log := structlog.FromContext(r.Context(), nil)
 		if code := sw.status; code < 500 {
 			log.Info("handled", "in", duration, logHTTPStatus, code)

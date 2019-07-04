@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// nolint
 var tableBrand = struct {
 	name           string
 	columnID       string
@@ -22,17 +23,18 @@ const (
 )
 
 type (
+	// NewBrand - model for creating new brand in storage.
 	NewBrand struct {
 		Name string
 	}
 )
 
 // BrandCreate - create new brand.
-func (db *db) BrandCreate(ctx Ctx, brand NewBrand) (ID int, err error) {
-	str := "INSERT INTO " + tableBrand.name + " (" + tableBrand.columnName + ") VALUES ($1) RETURNING " + tableBrand.columnID
-	err = db.conn.QueryRowxContext(ctx, str, brand.Name).Scan(&ID)
+func (db *db) BrandCreate(ctx Ctx, brand NewBrand) (id int, err error) {
+	str := "INSERT INTO " + tableBrand.name + " (" + tableBrand.columnName + ") " + "VALUES ($1) RETURNING " + tableBrand.columnID
+	err = db.conn.QueryRowxContext(ctx, str, brand.Name).Scan(&id)
 
-	return ID, errors.Wrapf(err, "failed to set new brand")
+	return id, errors.Wrapf(err, "failed to set new brand")
 }
 
 // BrandDelete - remove brand.

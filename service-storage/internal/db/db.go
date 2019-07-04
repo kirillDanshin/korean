@@ -1,11 +1,11 @@
 package db
 
 import (
-	"github.com/pkg/errors"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" // nolint:golint
+	"github.com/pkg/errors"
 	"github.com/powerman/structlog"
 	"golang.org/x/net/context"
 )
@@ -16,7 +16,7 @@ type (
 		setProduct chan<- Product
 		delProduct chan<- int
 	}
-
+	// Configuration for connection database.
 	Configuration struct {
 		Type     string
 		Host     string
@@ -25,14 +25,14 @@ type (
 		Password string
 		Name     string
 	}
-	// Сtx is a synonym for convenience.
+	// Ctx is a synonym for convenience.
 	Ctx = context.Context
 	// Log is a synonym for convenience.
 	Log = *structlog.Logger
 )
 
 // New - return new db.
-func New(conn *sqlx.DB, chSet chan<- Product, chDel chan<- int) (*db, error) {
+func New(conn *sqlx.DB, chSet chan<- Product, chDel chan<- int) (*db, error) { // nolint:golint
 	db := &db{conn: conn, setProduct: chSet, delProduct: chDel}
 	if err := db.migrate(); err != nil {
 		return nil, errors.Wrapf(err, "failed to migrate")
@@ -41,6 +41,7 @@ func New(conn *sqlx.DB, chSet chan<- Product, chDel chan<- int) (*db, error) {
 	return db, nil
 }
 
+// nolint:gochecknoglobals
 var tables = []string{schemeTableBrands, schemeTableProducts}
 
 func (db *db) migrate() error {

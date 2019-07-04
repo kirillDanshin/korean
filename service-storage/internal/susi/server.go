@@ -2,13 +2,14 @@ package susi
 
 import (
 	"context"
-	"github.com/pkg/errors"
-	"github.com/powerman/structlog"
-	"google.golang.org/grpc"
 	"net"
 	"storage/internal/db"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/powerman/structlog"
+	"google.golang.org/grpc"
 )
 
 const pollDelay = 5 * time.Second
@@ -21,7 +22,7 @@ type (
 		setProduct chan db.Product
 		delProduct chan int
 	}
-
+	// Storage products to send susi.
 	Storage interface {
 		GetProducts(ctx Ctx, since time.Time, ch chan<- db.Product) error
 	}
@@ -56,7 +57,7 @@ func (s *server) GetChanges(since *Since, stream Storage_GetChangesServer) error
 		events := dispatcher(s.setProduct, s.delProduct)
 
 		for event := range events {
-			if err := stream.Send(&event); err != nil {
+			if err := stream.Send(event); err != nil {
 				return s.log.Err("failed to send track", "err", err)
 			}
 		}
@@ -64,20 +65,20 @@ func (s *server) GetChanges(since *Since, stream Storage_GetChangesServer) error
 	}
 }
 
-func dispatcher(setProduct <-chan db.Product, delProduct <-chan int) <-chan ProductEvent {
-	events := make(chan ProductEvent)
+func dispatcher(setProduct <-chan db.Product, delProduct <-chan int) <-chan *ProductEvent {
+	events := make(chan *ProductEvent)
 
 	go func() {
 		for product := range setProduct {
 			convertProduct := convertSet(product)
-			events <- ProductEvent{Event: &ProductEvent_Set{Set: convertProduct}}
+			events <- &ProductEvent{Event: &ProductEvent_Set{Set: convertProduct}}
 		}
 	}()
 
 	go func() {
 		for productID := range delProduct {
 			convertDelProduct := convertDel(productID)
-			events <- ProductEvent{Event: &ProductEvent_Del{Del: convertDelProduct}}
+			events <- &ProductEvent{Event: &ProductEvent_Del{Del: convertDelProduct}}
 		}
 	}()
 
@@ -100,6 +101,7 @@ func convertDel(productID int) *DelProduct {
 	return &DelProduct{Id: int32(productID)}
 }
 
+// StartServer - listen grpc server.
 func StartServer(log Log, s Storage, chSet chan db.Product, chDel chan int, cfg Configuration) error {
 	addr := net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port))
 	ln, err := net.Listen("tcp", addr)

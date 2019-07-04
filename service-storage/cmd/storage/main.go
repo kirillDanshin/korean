@@ -3,16 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
-	"github.com/powerman/structlog"
 	"os"
 	"storage/internal/api"
 	"storage/internal/db"
 	"storage/internal/session"
 	"storage/internal/susi"
+
+	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+	"github.com/powerman/structlog"
 )
 
+// nolint:gochecknoglobals
 var (
 	log = structlog.New()
 
@@ -24,7 +26,7 @@ var (
 	}
 )
 
-func FlagParse() {
+func flagParse() {
 	hostname, err := os.Hostname()
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +58,7 @@ func FlagParse() {
 }
 
 func main() {
-	FlagParse()
+	flagParse()
 	log.Fatal(run())
 }
 
@@ -94,7 +96,9 @@ func run() error {
 
 	errs := make(chan error)
 	go func() { errs <- errors.Wrapf(server.Serve(), "failed to web server") }()
-	go func() { errs <- errors.Wrapf(susi.StartServer(log, store, chSet, chDel, cfg.susi), "failed to grpc server") }()
+	go func() {
+		errs <- errors.Wrapf(susi.StartServer(log, store, chSet, chDel, cfg.susi), "failed to grpc server")
+	}()
 
 	for err = range errs {
 		return err

@@ -2,12 +2,13 @@ package session
 
 import (
 	"context"
-	"github.com/go-redis/redis"
-	"github.com/pkg/errors"
-	"github.com/powerman/structlog"
 	"net"
 	"strconv"
 	"time"
+
+	"github.com/go-redis/redis"
+	"github.com/pkg/errors"
+	"github.com/powerman/structlog"
 )
 
 const (
@@ -27,7 +28,7 @@ type (
 		Password string
 		Expire   time.Duration
 	}
-
+	// Store session.
 	Store interface {
 		Set(ctx Ctx, token string, id int) (err error)
 		GetID(token string) (id *int, err error)
@@ -38,14 +39,15 @@ type (
 		storage *redis.Client
 	}
 
-	// Сtx is a synonym for convenience.
+	// Ctx is a synonym for convenience.
 	Ctx = context.Context
 	// Log is a synonym for convenience.
 	Log = *structlog.Logger
 )
 
-var (
-	UserNotAuthorized = errors.New("User unauthorized")
+// nolint:gochecknoglobals
+var ( // Errors
+	ErrUserNotAuthorized = errors.New("User unauthorized")
 )
 
 // Option - building params for connection Redis
@@ -57,7 +59,7 @@ func (cfg *Configuration) Option() *redis.Options {
 }
 
 // New - building client for connection DB
-func New(cfg Configuration) (*sessionStorage, error) {
+func New(cfg Configuration) (Store, error) {
 	redisClient := redis.NewClient(cfg.Option())
 	if err := redisClient.Ping().Err(); err != nil {
 		return nil, errors.Wrapf(err, "failed to connection redis")
@@ -77,7 +79,7 @@ func (c *sessionStorage) Set(ctx Ctx, token string, id int) (err error) {
 func (c *sessionStorage) GetID(token string) (*int, error) {
 	value, err := c.storage.Get(token).Result()
 	if err == redis.Nil {
-		return nil, UserNotAuthorized
+		return nil, ErrUserNotAuthorized
 	}
 
 	id, err := strconv.Atoi(value)
