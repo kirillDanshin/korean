@@ -3,26 +3,21 @@ package api
 import (
 	"net"
 	"net/http"
-	"storage/internal/api/restapi"
 	"strconv"
 
 	"github.com/go-openapi/loads"
 	"github.com/pkg/errors"
 	"github.com/powerman/structlog"
 	"golang.org/x/net/context"
+	"search/internal/api/restapi"
 )
 
 type (
 	service struct {
-		adminUsername string
-		adminPass     string
 	}
 
 	// Configuration contains config for api service.
 	Configuration struct {
-		AdminUsername string
-		AdminPass     string
-
 		Port int
 		Host string
 	}
@@ -36,8 +31,6 @@ type (
 // Serve must be called once before using this package.
 func Serve(log Log, cfg Configuration) (*restapi.Server, error) {
 	//svc := service{
-	//	adminPass:     cfg.AdminPass,
-	//	adminUsername: cfg.AdminUsername,
 	//}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
@@ -47,11 +40,6 @@ func Serve(log Log, cfg Configuration) (*restapi.Server, error) {
 
 	searchAPI := restapi.BuildAPI(
 		swaggerSpec,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
 		nil,
 		nil,
 		nil,
@@ -78,7 +66,7 @@ func Serve(log Log, cfg Configuration) (*restapi.Server, error) {
 	server.Port = cfg.Port
 	server.Host = cfg.Host
 
-	defer log.WarnIfFail(server.Shutdown)
+	//defer log.WarnIfFail(server.Shutdown)
 
 	log.Info("protocol", "version", swaggerSpec.Spec().Info.Version, "address", net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port)))
 	return server, nil
