@@ -1,9 +1,14 @@
 package api
 
 import (
+	"github.com/go-openapi/runtime/security"
+	"github.com/go-openapi/swag"
 	"net"
 	"net/http"
+	"storage/internal/api/models"
 	"storage/internal/api/restapi"
+	"storage/internal/db"
+	"storage/internal/session"
 	"strconv"
 
 	"github.com/go-openapi/loads"
@@ -16,6 +21,18 @@ type (
 	service struct {
 		adminUsername string
 		adminPass     string
+
+		storage Storage
+		session session.Store
+		log     Log
+	}
+
+	Storage interface {
+		BrandCreate(ctx Ctx, brand db.NewBrand) (ID int, err error)
+		BrandDelete(ctx Ctx, brandID int) (err error)
+
+		ProductCreate(ctx Ctx, product db.NewProduct) (ID int, err error)
+		ProductDelete(ctx Ctx, productID int) (err error)
 	}
 
 	// Configuration contains config for api service.
@@ -28,17 +45,20 @@ type (
 	}
 
 	// Сtx is a synonym for convenience.
-	Сtx = context.Context
+	Ctx = context.Context
 	// Log is a synonym for convenience.
 	Log = *structlog.Logger
 )
 
 // Serve must be called once before using this package.
-func Serve(log Log, cfg Configuration) (*restapi.Server, error) {
-	//svc := service{
-	//	adminPass:     cfg.AdminPass,
-	//	adminUsername: cfg.AdminUsername,
-	//}
+func Serve(log Log, store Storage, sessionStore session.Store, cfg Configuration) (*restapi.Server, error) {
+	svc := service{
+		adminPass:     cfg.AdminPass,
+		adminUsername: cfg.AdminUsername,
+		storage:       store,
+		log:           log,
+		session:       sessionStore,
+	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
@@ -48,27 +68,24 @@ func Serve(log Log, cfg Configuration) (*restapi.Server, error) {
 	searchAPI := restapi.BuildAPI(
 		swaggerSpec,
 		nil,
+		log.Printf,
 		nil,
 		nil,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
+		sessionStore.GetID,
+		security.Authorized(),
+		svc.brandDELETE,
+		svc.brandPOST,
+		svc.login,
+		svc.productDELETE,
+		svc.productPOST,
 		nil,
 	)
 
-	// The middleware executes before anything.
 	globalMiddleware := func(handler http.Handler) http.Handler {
 		logger := makeLogger(swaggerSpec.BasePath())
 		return logger(recovery(handleCORS(handler)))
 	}
-	// The middleware executes after serving /swagger.json and routing,
-	// but before authentication, binding and validation.
+
 	middlewares := func(handler http.Handler) http.Handler {
 		return accessLog(handler)
 	}
@@ -78,20 +95,13 @@ func Serve(log Log, cfg Configuration) (*restapi.Server, error) {
 	server.Port = cfg.Port
 	server.Host = cfg.Host
 
-	defer log.WarnIfFail(server.Shutdown)
-
 	log.Info("protocol", "version", swaggerSpec.Spec().Info.Version, "address", net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port)))
 	return server, nil
 }
 
-const (
-	logUser = "logUser"
-	notAuth = 0
-)
-
-func fromRequest(r *http.Request, userID int) (Сtx, Log) {
-	ctx := r.Context()
-
-	log := structlog.FromContext(ctx, nil).SetDefaultKeyvals(logUser, userID)
-	return ctx, log
+func createErr(code int) *models.Error {
+	return &models.Error{
+		Code:    swag.Int32(int32(code)),
+		Message: swag.String(http.StatusText(code)),
+	}
 }

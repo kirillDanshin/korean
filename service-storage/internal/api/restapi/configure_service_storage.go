@@ -12,7 +12,7 @@ import (
 	"storage/internal/api/restapi/operations"
 )
 
-//go:generate swagger generate server --target ../../api --name ServiceStorage --spec ../swagger.yml --principal string --exclude-main --strict
+//go:generate swagger generate server --target ../../api --name ServiceStorage --spec ../swagger.yml --principal int --exclude-main --strict
 
 func configureFlags(api *operations.ServiceStorageAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -30,12 +30,10 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
-	api.MultipartformConsumer = runtime.DiscardConsumer
-
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the "AdminCookie" header is set
-	api.APIKeyAuth = func(token string) (*string, error) {
+	api.APIKeyAuth = func(token string) (*int, error) {
 		return nil, errors.NotImplemented("api key auth (apiKey) AdminCookie from header param [AdminCookie] has not yet been implemented")
 	}
 
@@ -44,20 +42,20 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 	//
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
-	api.BrandCreateHandler = operations.BrandCreateHandlerFunc(func(params operations.BrandCreateParams, principal *string) operations.BrandCreateResponder {
-		return operations.BrandCreateNotImplemented()
+	api.BrandDELETEHandler = operations.BrandDELETEHandlerFunc(func(params operations.BrandDELETEParams, principal *int) operations.BrandDELETEResponder {
+		return operations.BrandDELETENotImplemented()
 	})
-	api.BrandDeleteHandler = operations.BrandDeleteHandlerFunc(func(params operations.BrandDeleteParams, principal *string) operations.BrandDeleteResponder {
-		return operations.BrandDeleteNotImplemented()
+	api.BrandPOSTHandler = operations.BrandPOSTHandlerFunc(func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder {
+		return operations.BrandPOSTNotImplemented()
 	})
 	api.LoginHandler = operations.LoginHandlerFunc(func(params operations.LoginParams) operations.LoginResponder {
 		return operations.LoginNotImplemented()
 	})
-	api.ProductCreateHandler = operations.ProductCreateHandlerFunc(func(params operations.ProductCreateParams, principal *string) operations.ProductCreateResponder {
-		return operations.ProductCreateNotImplemented()
+	api.ProductDELETEHandler = operations.ProductDELETEHandlerFunc(func(params operations.ProductDELETEParams, principal *int) operations.ProductDELETEResponder {
+		return operations.ProductDELETENotImplemented()
 	})
-	api.ProductDeleteHandler = operations.ProductDeleteHandlerFunc(func(params operations.ProductDeleteParams, principal *string) operations.ProductDeleteResponder {
-		return operations.ProductDeleteNotImplemented()
+	api.ProductPOSTHandler = operations.ProductPOSTHandlerFunc(func(params operations.ProductPOSTParams, principal *int) operations.ProductPOSTResponder {
+		return operations.ProductPOSTNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}

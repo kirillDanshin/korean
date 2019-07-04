@@ -1,8 +1,8 @@
 package api
 
 import (
+	"github.com/pkg/errors"
 	"net/http"
-	"time"
 )
 
 type statusWriter struct {
@@ -22,7 +22,5 @@ func (w *statusWriter) Write(b []byte) (int, error) {
 	}
 	n, err := w.ResponseWriter.Write(b)
 	w.length += n
-	return n, err
+	return n, errors.Wrap(err, "failed to write responseWriter")
 }
-
-

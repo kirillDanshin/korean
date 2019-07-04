@@ -38,7 +38,7 @@ func init() {
     "/brand": {
       "post": {
         "description": "Create new brand",
-        "operationId": "brandCreate",
+        "operationId": "brandPOST",
         "parameters": [
           {
             "name": "args",
@@ -60,7 +60,7 @@ func init() {
       },
       "delete": {
         "description": "Delete brand",
-        "operationId": "brandDelete",
+        "operationId": "brandDELETE",
         "parameters": [
           {
             "type": "integer",
@@ -115,14 +115,12 @@ func init() {
     "/product": {
       "post": {
         "description": "Create new product",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "operationId": "productCreate",
+        "operationId": "productPOST",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ProductCreate"
             }
@@ -139,7 +137,7 @@ func init() {
       },
       "delete": {
         "description": "Delete product",
-        "operationId": "productDelete",
+        "operationId": "productDELETE",
         "parameters": [
           {
             "type": "integer",
@@ -222,11 +220,15 @@ func init() {
         "name",
         "description",
         "apply",
-        "price"
+        "price",
+        "brandID"
       ],
       "properties": {
         "apply": {
           "type": "string"
+        },
+        "brandID": {
+          "type": "integer"
         },
         "description": {
           "type": "string"
@@ -255,11 +257,12 @@ func init() {
     "UserInfo": {
       "type": "object",
       "required": [
-        "username"
+        "username",
+        "token"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/definitions/ID"
+        "token": {
+          "type": "string"
         },
         "username": {
           "$ref": "#/definitions/Username"
@@ -270,8 +273,7 @@ func init() {
       "description": "User login.",
       "type": "string",
       "maxLength": 32,
-      "minLength": 1,
-      "pattern": "^[A-Za-z0-9_]{4,16}$"
+      "minLength": 1
     }
   },
   "responses": {
@@ -326,7 +328,7 @@ func init() {
     "/brand": {
       "post": {
         "description": "Create new brand",
-        "operationId": "brandCreate",
+        "operationId": "brandPOST",
         "parameters": [
           {
             "name": "args",
@@ -354,7 +356,7 @@ func init() {
       },
       "delete": {
         "description": "Delete brand",
-        "operationId": "brandDelete",
+        "operationId": "brandDELETE",
         "parameters": [
           {
             "type": "integer",
@@ -415,14 +417,12 @@ func init() {
     "/product": {
       "post": {
         "description": "Create new product",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "operationId": "productCreate",
+        "operationId": "productPOST",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ProductCreate"
             }
@@ -445,7 +445,7 @@ func init() {
       },
       "delete": {
         "description": "Delete product",
-        "operationId": "productDelete",
+        "operationId": "productDELETE",
         "parameters": [
           {
             "type": "integer",
@@ -531,11 +531,15 @@ func init() {
         "name",
         "description",
         "apply",
-        "price"
+        "price",
+        "brandID"
       ],
       "properties": {
         "apply": {
           "type": "string"
+        },
+        "brandID": {
+          "type": "integer"
         },
         "description": {
           "type": "string"
@@ -564,11 +568,12 @@ func init() {
     "UserInfo": {
       "type": "object",
       "required": [
-        "username"
+        "username",
+        "token"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/definitions/ID"
+        "token": {
+          "type": "string"
         },
         "username": {
           "$ref": "#/definitions/Username"
@@ -579,8 +584,7 @@ func init() {
       "description": "User login.",
       "type": "string",
       "maxLength": 32,
-      "minLength": 1,
-      "pattern": "^[A-Za-z0-9_]{4,16}$"
+      "minLength": 1
     }
   },
   "responses": {

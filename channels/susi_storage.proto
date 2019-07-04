@@ -1,0 +1,32 @@
+syntax = "proto3";
+package storage;
+
+service Storage {
+    rpc GetChanges (Since) returns (stream ProductEvent);
+}
+
+message Since {
+    int64 UNIX = 1;
+}
+
+message ProductEvent {
+    oneof event {
+        SetProduct set = 1;
+        DelProduct del = 2;
+    }
+}
+
+message SetProduct {
+    int32 id = 1;
+    string brand = 2;
+    string name = 3;
+    string description = 4;
+    string apply = 5;
+    int32 price = 6;
+    string avatar = 7;
+}
+
+message DelProduct {
+    int32 id = 1;
+}
+

@@ -28,10 +28,6 @@ func (m Username) Validate(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.Pattern("", "body", string(m), `^[A-Za-z0-9_]{4,16}$`); err != nil {
-		return err
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

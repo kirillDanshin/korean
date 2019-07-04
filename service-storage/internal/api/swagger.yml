@@ -43,7 +43,7 @@ paths:
   /brand:
     post:
       description: "Create new brand"
-      operationId: brandCreate
+      operationId: brandPOST
       parameters:
         - name: args
           required: true
@@ -57,7 +57,7 @@ paths:
 
     delete:
       description: "Delete brand"
-      operationId: brandDelete
+      operationId: brandDELETE
       parameters:
         - name: id
           required: true
@@ -71,12 +71,11 @@ paths:
   /product:
     post:
       description: "Create new product"
-      operationId: productCreate
-      consumes:
-        - multipart/form-data
+      operationId: productPOST
       parameters:
         - name: args
           in: body
+          required: true
           schema:
             $ref: '#/definitions/ProductCreate'
 
@@ -86,7 +85,7 @@ paths:
 
     delete:
       description: "Delete product"
-      operationId: productDelete
+      operationId: productDELETE
       parameters:
         - name: id
           required: true
@@ -148,6 +147,7 @@ definitions:
       - description
       - apply
       - price
+      - brandID
     properties:
       name:
         type: string
@@ -159,20 +159,22 @@ definitions:
         type: string
       price:
         type: integer
+      brandID:
+        type: integer
 
   UserInfo:
     type: object
     required:
       - username
+      - token
     properties:
-      id:
-        $ref: '#/definitions/ID'
+      token:
+        type: string
       username:
         $ref: '#/definitions/Username'
 
   Username:
     type: string
-    pattern: '^[A-Za-z0-9_]{4,16}$'
     minLength: 1
     maxLength: 32
     description: User login.

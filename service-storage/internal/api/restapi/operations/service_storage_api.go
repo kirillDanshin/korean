@@ -23,44 +23,43 @@ import (
 // NewServiceStorageAPI creates a new ServiceStorage instance
 func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 	return &ServiceStorageAPI{
-		handlers:              make(map[string]map[string]http.Handler),
-		formats:               strfmt.Default,
-		defaultConsumes:       "application/json",
-		defaultProduces:       "application/json",
-		customConsumers:       make(map[string]runtime.Consumer),
-		customProducers:       make(map[string]runtime.Producer),
-		ServerShutdown:        func() {},
-		spec:                  spec,
-		ServeError:            errors.ServeError,
-		BasicAuthenticator:    security.BasicAuth,
-		APIKeyAuthenticator:   security.APIKeyAuth,
-		BearerAuthenticator:   security.BearerAuth,
-		JSONConsumer:          runtime.JSONConsumer(),
-		MultipartformConsumer: runtime.DiscardConsumer,
-		JSONProducer:          runtime.JSONProducer(),
-		BrandCreateHandler: BrandCreateHandlerFunc(func(params BrandCreateParams, principal *string) BrandCreateResponder {
-			// return middleware.NotImplemented("operation BrandCreate has not yet been implemented")
-			return BrandCreateNotImplemented()
+		handlers:            make(map[string]map[string]http.Handler),
+		formats:             strfmt.Default,
+		defaultConsumes:     "application/json",
+		defaultProduces:     "application/json",
+		customConsumers:     make(map[string]runtime.Consumer),
+		customProducers:     make(map[string]runtime.Producer),
+		ServerShutdown:      func() {},
+		spec:                spec,
+		ServeError:          errors.ServeError,
+		BasicAuthenticator:  security.BasicAuth,
+		APIKeyAuthenticator: security.APIKeyAuth,
+		BearerAuthenticator: security.BearerAuth,
+		JSONConsumer:        runtime.JSONConsumer(),
+		JSONProducer:        runtime.JSONProducer(),
+		BrandDELETEHandler: BrandDELETEHandlerFunc(func(params BrandDELETEParams, principal *int) BrandDELETEResponder {
+			// return middleware.NotImplemented("operation BrandDELETE has not yet been implemented")
+			return BrandDELETENotImplemented()
 		}),
-		BrandDeleteHandler: BrandDeleteHandlerFunc(func(params BrandDeleteParams, principal *string) BrandDeleteResponder {
-			// return middleware.NotImplemented("operation BrandDelete has not yet been implemented")
-			return BrandDeleteNotImplemented()
+		BrandPOSTHandler: BrandPOSTHandlerFunc(func(params BrandPOSTParams, principal *int) BrandPOSTResponder {
+			// return middleware.NotImplemented("operation BrandPOST has not yet been implemented")
+			return BrandPOSTNotImplemented()
 		}),
 		LoginHandler: LoginHandlerFunc(func(params LoginParams) LoginResponder {
 			// return middleware.NotImplemented("operation Login has not yet been implemented")
 			return LoginNotImplemented()
 		}),
-		ProductCreateHandler: ProductCreateHandlerFunc(func(params ProductCreateParams, principal *string) ProductCreateResponder {
-			// return middleware.NotImplemented("operation ProductCreate has not yet been implemented")
-			return ProductCreateNotImplemented()
+		ProductDELETEHandler: ProductDELETEHandlerFunc(func(params ProductDELETEParams, principal *int) ProductDELETEResponder {
+			// return middleware.NotImplemented("operation ProductDELETE has not yet been implemented")
+			return ProductDELETENotImplemented()
 		}),
-		ProductDeleteHandler: ProductDeleteHandlerFunc(func(params ProductDeleteParams, principal *string) ProductDeleteResponder {
-			// return middleware.NotImplemented("operation ProductDelete has not yet been implemented")
-			return ProductDeleteNotImplemented()
+		ProductPOSTHandler: ProductPOSTHandlerFunc(func(params ProductPOSTParams, principal *int) ProductPOSTResponder {
+			// return middleware.NotImplemented("operation ProductPOST has not yet been implemented")
+			return ProductPOSTNotImplemented()
 		}),
 
 		// Applies when the "AdminCookie" header is set
-		APIKeyAuth: func(token string) (*string, error) {
+		APIKeyAuth: func(token string) (*int, error) {
 			return nil, errors.NotImplemented("api key auth (apiKey) AdminCookie from header param [AdminCookie] has not yet been implemented")
 		},
 
@@ -93,29 +92,27 @@ type ServiceStorageAPI struct {
 
 	// JSONConsumer registers a consumer for a "application/json" mime type
 	JSONConsumer runtime.Consumer
-	// MultipartformConsumer registers a consumer for a "multipart/form-data" mime type
-	MultipartformConsumer runtime.Consumer
 
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
 	// APIKeyAuth registers a function that takes a token and returns a principal
 	// it performs authentication based on an api key AdminCookie provided in the header
-	APIKeyAuth func(string) (*string, error)
+	APIKeyAuth func(string) (*int, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
-	// BrandCreateHandler sets the operation handler for the brand create operation
-	BrandCreateHandler BrandCreateHandler
-	// BrandDeleteHandler sets the operation handler for the brand delete operation
-	BrandDeleteHandler BrandDeleteHandler
+	// BrandDELETEHandler sets the operation handler for the brand d e l e t e operation
+	BrandDELETEHandler BrandDELETEHandler
+	// BrandPOSTHandler sets the operation handler for the brand p o s t operation
+	BrandPOSTHandler BrandPOSTHandler
 	// LoginHandler sets the operation handler for the login operation
 	LoginHandler LoginHandler
-	// ProductCreateHandler sets the operation handler for the product create operation
-	ProductCreateHandler ProductCreateHandler
-	// ProductDeleteHandler sets the operation handler for the product delete operation
-	ProductDeleteHandler ProductDeleteHandler
+	// ProductDELETEHandler sets the operation handler for the product d e l e t e operation
+	ProductDELETEHandler ProductDELETEHandler
+	// ProductPOSTHandler sets the operation handler for the product p o s t operation
+	ProductPOSTHandler ProductPOSTHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -175,10 +172,6 @@ func (o *ServiceStorageAPI) Validate() error {
 		unregistered = append(unregistered, "JSONConsumer")
 	}
 
-	if o.MultipartformConsumer == nil {
-		unregistered = append(unregistered, "MultipartformConsumer")
-	}
-
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
 	}
@@ -187,24 +180,24 @@ func (o *ServiceStorageAPI) Validate() error {
 		unregistered = append(unregistered, "AdminCookieAuth")
 	}
 
-	if o.BrandCreateHandler == nil {
-		unregistered = append(unregistered, "BrandCreateHandler")
+	if o.BrandDELETEHandler == nil {
+		unregistered = append(unregistered, "BrandDELETEHandler")
 	}
 
-	if o.BrandDeleteHandler == nil {
-		unregistered = append(unregistered, "BrandDeleteHandler")
+	if o.BrandPOSTHandler == nil {
+		unregistered = append(unregistered, "BrandPOSTHandler")
 	}
 
 	if o.LoginHandler == nil {
 		unregistered = append(unregistered, "LoginHandler")
 	}
 
-	if o.ProductCreateHandler == nil {
-		unregistered = append(unregistered, "ProductCreateHandler")
+	if o.ProductDELETEHandler == nil {
+		unregistered = append(unregistered, "ProductDELETEHandler")
 	}
 
-	if o.ProductDeleteHandler == nil {
-		unregistered = append(unregistered, "ProductDeleteHandler")
+	if o.ProductPOSTHandler == nil {
+		unregistered = append(unregistered, "ProductPOSTHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -254,9 +247,6 @@ func (o *ServiceStorageAPI) ConsumersFor(mediaTypes []string) map[string]runtime
 
 		case "application/json":
 			result["application/json"] = o.JSONConsumer
-
-		case "multipart/form-data":
-			result["multipart/form-data"] = o.MultipartformConsumer
 
 		}
 
@@ -320,30 +310,30 @@ func (o *ServiceStorageAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/brand"] = NewBrandCreate(o.context, o.BrandCreateHandler)
-
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/brand"] = NewBrandDelete(o.context, o.BrandDeleteHandler)
+	o.handlers["DELETE"]["/brand"] = NewBrandDELETE(o.context, o.BrandDELETEHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/brand"] = NewBrandPOST(o.context, o.BrandPOSTHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/login"] = NewLogin(o.context, o.LoginHandler)
 
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/product"] = NewProductCreate(o.context, o.ProductCreateHandler)
-
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/product"] = NewProductDelete(o.context, o.ProductDeleteHandler)
+	o.handlers["DELETE"]["/product"] = NewProductDELETE(o.context, o.ProductDELETEHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/product"] = NewProductPOST(o.context, o.ProductPOSTHandler)
 
 }
 

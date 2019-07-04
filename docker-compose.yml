@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+
+  postgresql:
+    container_name: postgresql
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: "postgresql"
+      POSTGRES_DB: "postgresql"
+      POSTGRES_PASSWORD: postgresql
+
+  elastic:
+    image: "elasticsearch:7.1.0"
+    container_name: elastic
+    restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:5.0
+    command:
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 10000'
+      - '--maxmemory ${REDIS_MAXMEM:-50mb}'
+      - '--maxmemory-policy ${REDIS_POLICY:-noeviction}'
+      - '--requirepass ${REDIS_PASS:-""}'
+    ports:
+      - "6379:6379"

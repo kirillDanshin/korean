@@ -21,6 +21,10 @@ type ProductCreate struct {
 	// Required: true
 	Apply *string `json:"apply"`
 
+	// brand ID
+	// Required: true
+	BrandID *int64 `json:"brandID"`
+
 	// description
 	// Required: true
 	Description *string `json:"description"`
@@ -41,6 +45,10 @@ func (m *ProductCreate) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateApply(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateBrandID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -65,6 +73,15 @@ func (m *ProductCreate) Validate(formats strfmt.Registry) error {
 func (m *ProductCreate) validateApply(formats strfmt.Registry) error {
 
 	if err := validate.Required("apply", "body", m.Apply); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ProductCreate) validateBrandID(formats strfmt.Registry) error {
+
+	if err := validate.Required("brandID", "body", m.BrandID); err != nil {
 		return err
 	}
 

@@ -10,14 +10,16 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // UserInfo user info
 // swagger:model UserInfo
 type UserInfo struct {
 
-	// id
-	ID ID `json:"id,omitempty"`
+	// token
+	// Required: true
+	Token *string `json:"token"`
 
 	// username
 	// Required: true
@@ -28,7 +30,7 @@ type UserInfo struct {
 func (m *UserInfo) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateID(formats); err != nil {
+	if err := m.validateToken(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -42,16 +44,9 @@ func (m *UserInfo) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UserInfo) validateID(formats strfmt.Registry) error {
+func (m *UserInfo) validateToken(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.ID) { // not required
-		return nil
-	}
-
-	if err := m.ID.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("id")
-		}
+	if err := validate.Required("token", "body", m.Token); err != nil {
 		return err
 	}
 

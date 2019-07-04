@@ -19,18 +19,17 @@ func BuildAPI(
 	Logger func(string, ...interface{}),
 
 	JSONConsumer func(r io.Reader, target interface{}) error,
-	MultipartformConsumer func(r io.Reader, target interface{}) error,
 
 	JSONProducer func(w io.Writer, data interface{}) error,
 
-	APIKeyAuth func(token string) (*string, error),
+	APIKeyAuth func(token string) (*int, error),
 	APIAuthorizer runtime.Authorizer,
 
-	BrandCreate func(params operations.BrandCreateParams, principal *string) operations.BrandCreateResponder,
-	BrandDelete func(params operations.BrandDeleteParams, principal *string) operations.BrandDeleteResponder,
+	BrandDELETE func(params operations.BrandDELETEParams, principal *int) operations.BrandDELETEResponder,
+	BrandPOST func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder,
 	Login func(params operations.LoginParams) operations.LoginResponder,
-	ProductCreate func(params operations.ProductCreateParams, principal *string) operations.ProductCreateResponder,
-	ProductDelete func(params operations.ProductDeleteParams, principal *string) operations.ProductDeleteResponder,
+	ProductDELETE func(params operations.ProductDELETEParams, principal *int) operations.ProductDELETEResponder,
+	ProductPOST func(params operations.ProductPOSTParams, principal *int) operations.ProductPOSTResponder,
 
 	ServerShutdown func(),
 
@@ -49,10 +48,6 @@ func BuildAPI(
 		api.JSONConsumer = runtime.ConsumerFunc(JSONConsumer)
 	}
 
-	if MultipartformConsumer != nil {
-		api.MultipartformConsumer = runtime.ConsumerFunc(MultipartformConsumer)
-	}
-
 	if JSONProducer != nil {
 		api.JSONProducer = runtime.ProducerFunc(JSONProducer)
 	}
@@ -64,24 +59,24 @@ func BuildAPI(
 		api.APIAuthorizer = APIAuthorizer
 	}
 
-	if BrandCreate != nil {
-		api.BrandCreateHandler = operations.BrandCreateHandlerFunc(BrandCreate)
+	if BrandDELETE != nil {
+		api.BrandDELETEHandler = operations.BrandDELETEHandlerFunc(BrandDELETE)
 	}
 
-	if BrandDelete != nil {
-		api.BrandDeleteHandler = operations.BrandDeleteHandlerFunc(BrandDelete)
+	if BrandPOST != nil {
+		api.BrandPOSTHandler = operations.BrandPOSTHandlerFunc(BrandPOST)
 	}
 
 	if Login != nil {
 		api.LoginHandler = operations.LoginHandlerFunc(Login)
 	}
 
-	if ProductCreate != nil {
-		api.ProductCreateHandler = operations.ProductCreateHandlerFunc(ProductCreate)
+	if ProductDELETE != nil {
+		api.ProductDELETEHandler = operations.ProductDELETEHandlerFunc(ProductDELETE)
 	}
 
-	if ProductDelete != nil {
-		api.ProductDeleteHandler = operations.ProductDeleteHandlerFunc(ProductDelete)
+	if ProductPOST != nil {
+		api.ProductPOSTHandler = operations.ProductPOSTHandlerFunc(ProductPOST)
 	}
 
 	if ServerShutdown != nil {
