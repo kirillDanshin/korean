@@ -43,3 +43,19 @@ services:
       - '--requirepass ${REDIS_PASS:-""}'
     ports:
       - "6379:6379"
+
+  storage:
+      build:
+        context: service-storage
+        dockerfile: Dockerfile
+      image: storage
+      container_name: storage
+      restart: always
+      entrypoint: /storage
+      volumes:
+        - ../upload:/upload
+      command:
+        - "--db.host=postgresql"
+        - "--sessionStore.host=redis"
+      ports:
+        - "8080:8080"
