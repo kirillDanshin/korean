@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"storage/internal/api"
-	"storage/internal/db"
-	"storage/internal/session"
 
+	"github.com/ZergsLaw/korean/src/internal/api"
+	"github.com/ZergsLaw/korean/src/internal/db"
+	"github.com/ZergsLaw/korean/src/internal/session"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/powerman/structlog"

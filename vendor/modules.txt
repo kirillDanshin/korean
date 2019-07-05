@@ -4,17 +4,8 @@ github.com/PuerkitoBio/purell
 github.com/PuerkitoBio/urlesc
 # github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
 github.com/asaskevich/govalidator
-# github.com/disheshub/culinario v0.0.0-20190702195607-0fd6f7fb6adc
-github.com/disheshub/culinario/internal/api/generated/restapi
-github.com/disheshub/culinario/internal/app
-github.com/disheshub/culinario/internal/api/generated/restapi/operations
-github.com/disheshub/culinario/internal/lib/hash
-github.com/disheshub/culinario/internal/api/generated/models
 # github.com/docker/go-units v0.4.0
 github.com/docker/go-units
-# github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
-github.com/globalsign/mgo/bson
-github.com/globalsign/mgo/internal/json
 # github.com/go-openapi/analysis v0.19.2
 github.com/go-openapi/analysis
 github.com/go-openapi/analysis/internal
@@ -26,7 +17,7 @@ github.com/go-openapi/jsonpointer
 github.com/go-openapi/jsonreference
 # github.com/go-openapi/loads v0.19.2
 github.com/go-openapi/loads
-# github.com/go-openapi/runtime v0.19.2
+# github.com/go-openapi/runtime v0.19.3
 github.com/go-openapi/runtime/security
 github.com/go-openapi/runtime
 github.com/go-openapi/runtime/flagext
@@ -37,14 +28,31 @@ github.com/go-openapi/runtime/middleware/header
 github.com/go-openapi/runtime/middleware/untyped
 # github.com/go-openapi/spec v0.19.2
 github.com/go-openapi/spec
-# github.com/go-openapi/strfmt v0.19.0
+# github.com/go-openapi/strfmt v0.19.2
 github.com/go-openapi/strfmt
-# github.com/go-openapi/swag v0.19.3
+# github.com/go-openapi/swag v0.19.4
 github.com/go-openapi/swag
 # github.com/go-openapi/validate v0.19.2
 github.com/go-openapi/validate
+# github.com/go-redis/redis v6.15.2+incompatible
+github.com/go-redis/redis
+github.com/go-redis/redis/internal
+github.com/go-redis/redis/internal/consistenthash
+github.com/go-redis/redis/internal/hashtag
+github.com/go-redis/redis/internal/pool
+github.com/go-redis/redis/internal/proto
+github.com/go-redis/redis/internal/util
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
 # github.com/jessevdk/go-flags v1.4.0
 github.com/jessevdk/go-flags
+# github.com/jmoiron/sqlx v1.2.0
+github.com/jmoiron/sqlx
+github.com/jmoiron/sqlx/reflectx
+# github.com/lib/pq v1.1.1
+github.com/lib/pq
+github.com/lib/pq/oid
+github.com/lib/pq/scram
 # github.com/mailru/easyjson v0.0.0-20190614124828-94de47d64c63
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
@@ -55,10 +63,21 @@ github.com/mitchellh/mapstructure
 github.com/pkg/errors
 # github.com/powerman/structlog v0.5.0
 github.com/powerman/structlog
+# github.com/rs/cors v1.6.0
+github.com/rs/cors
+# github.com/sebest/xff v0.0.0-20160910043805-6c115e0ffa35
+github.com/sebest/xff
+# go.mongodb.org/mongo-driver v1.0.3
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
 # golang.org/x/crypto v0.0.0-20190617133340-57b3e21c3d56
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
-# golang.org/x/net v0.0.0-20190628185345-da137c7871d7
+# golang.org/x/net v0.0.0-20190613194153-d28f0bde5980
 golang.org/x/net/context
 golang.org/x/net/netutil
 golang.org/x/net/idna
