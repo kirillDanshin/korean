@@ -28,9 +28,9 @@ func BuildAPI(
 	BrandDELETE func(params operations.BrandDELETEParams, principal *int) operations.BrandDELETEResponder,
 	BrandList func(params operations.BrandListParams, principal *int) operations.BrandListResponder,
 	BrandPOST func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder,
-	ListProduct func(params operations.ListProductParams, principal *int) operations.ListProductResponder,
+	ListProduct func(params operations.ListProductParams) operations.ListProductResponder,
 	Login func(params operations.LoginParams) operations.LoginResponder,
-	Product func(params operations.ProductParams, principal *int) operations.ProductResponder,
+	Product func(params operations.ProductParams) operations.ProductResponder,
 	ProductDELETE func(params operations.ProductDELETEParams, principal *int) operations.ProductDELETEResponder,
 	ProductPOST func(params operations.ProductPOSTParams, principal *int) operations.ProductPOSTResponder,
 

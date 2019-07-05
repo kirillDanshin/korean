@@ -1,0 +1,20 @@
+package api
+
+import (
+	"github.com/ZergsLaw/korean/src/internal/api/restapi/operations"
+	"net/http"
+)
+
+func (api *service) brandGET(params operations.BrandListParams, principal *int) operations.BrandListResponder {
+	ctx := params.HTTPRequest.Context()
+
+	brands, err := api.storage.GetBrands(ctx)
+	if err != nil {
+		api.log.Warn(err)
+
+		return operations.NewBrandListDefault(http.StatusInternalServerError).
+			WithPayload(createErr(http.StatusInternalServerError))
+	}
+
+	return operations.NewBrandListOK().WithPayload(convertBrands(brands))
+}

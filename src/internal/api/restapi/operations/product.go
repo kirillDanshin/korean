@@ -12,16 +12,16 @@ import (
 )
 
 // ProductHandlerFunc turns a function with the right signature into a product handler
-type ProductHandlerFunc func(ProductParams, *int) ProductResponder
+type ProductHandlerFunc func(ProductParams) ProductResponder
 
 // Handle executing the request and returning a response
-func (fn ProductHandlerFunc) Handle(params ProductParams, principal *int) ProductResponder {
-	return fn(params, principal)
+func (fn ProductHandlerFunc) Handle(params ProductParams) ProductResponder {
+	return fn(params)
 }
 
 // ProductHandler interface for that can handle valid product params
 type ProductHandler interface {
-	Handle(ProductParams, *int) ProductResponder
+	Handle(ProductParams) ProductResponder
 }
 
 // NewProduct creates a new http.Handler for the product operation
@@ -46,25 +46,12 @@ func (o *Product) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 	var Params = NewProductParams()
 
-	uprinc, aCtx, err := o.Context.Authorize(r, route)
-	if err != nil {
-		o.Context.Respond(rw, r, route.Produces, route, err)
-		return
-	}
-	if aCtx != nil {
-		r = aCtx
-	}
-	var principal *int
-	if uprinc != nil {
-		principal = uprinc.(*int) // this is really a int, I promise
-	}
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
-	res := o.Handler.Handle(Params, principal) // actually handle the request
+	res := o.Handler.Handle(Params) // actually handle the request
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 

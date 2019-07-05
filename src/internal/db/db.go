@@ -19,8 +19,8 @@ type (
 
 		ProductCreate(ctx Ctx, product NewProduct) (*Product, error)
 		ProductDelete(ctx Ctx, productID int) (err error)
-		ProductsByBrand(ctx Ctx, params Params) ([]Product, error)
-		Products(ctx Ctx, params Params) ([]Product, error)
+		ProductByID(ctx Ctx, id int) (*Product, error)
+		ListProduct(ctx Ctx, params Params) ([]Product, error)
 	}
 
 	db struct {

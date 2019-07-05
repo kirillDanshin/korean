@@ -48,7 +48,7 @@ func (o *ListProductURL) Build() (*url.URL, error) {
 
 	_basePath := o._basePath
 	if _basePath == "" {
-		_basePath = "/api/storage"
+		_basePath = "/api"
 	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 

@@ -33,7 +33,7 @@ func init() {
     "title": "Service-storage",
     "version": "0.0.1"
   },
-  "basePath": "/api/storage",
+  "basePath": "/api",
   "paths": {
     "/brand": {
       "get": {
@@ -170,6 +170,7 @@ func init() {
     },
     "/product/{productID}": {
       "get": {
+        "security": [],
         "operationId": "product",
         "parameters": [
           {
@@ -192,6 +193,7 @@ func init() {
     },
     "/products": {
       "get": {
+        "security": [],
         "operationId": "listProduct",
         "parameters": [
           {
@@ -290,6 +292,23 @@ func init() {
         },
         "username": {
           "$ref": "#/definitions/Username"
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "required": [
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "maximum": 500,
+          "minimum": 1
+        },
+        "offset": {
+          "type": "integer"
         }
       }
     },
@@ -452,7 +471,7 @@ func init() {
     "title": "Service-storage",
     "version": "0.0.1"
   },
-  "basePath": "/api/storage",
+  "basePath": "/api",
   "paths": {
     "/brand": {
       "get": {
@@ -622,6 +641,7 @@ func init() {
     },
     "/product/{productID}": {
       "get": {
+        "security": [],
         "operationId": "product",
         "parameters": [
           {
@@ -650,6 +670,7 @@ func init() {
     },
     "/products": {
       "get": {
+        "security": [],
         "operationId": "listProduct",
         "parameters": [
           {
@@ -757,6 +778,24 @@ func init() {
         },
         "username": {
           "$ref": "#/definitions/Username"
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "required": [
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "maximum": 500,
+          "minimum": 1
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     },

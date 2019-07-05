@@ -51,13 +51,13 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 	api.BrandPOSTHandler = operations.BrandPOSTHandlerFunc(func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder {
 		return operations.BrandPOSTNotImplemented()
 	})
-	api.ListProductHandler = operations.ListProductHandlerFunc(func(params operations.ListProductParams, principal *int) operations.ListProductResponder {
+	api.ListProductHandler = operations.ListProductHandlerFunc(func(params operations.ListProductParams) operations.ListProductResponder {
 		return operations.ListProductNotImplemented()
 	})
 	api.LoginHandler = operations.LoginHandlerFunc(func(params operations.LoginParams) operations.LoginResponder {
 		return operations.LoginNotImplemented()
 	})
-	api.ProductHandler = operations.ProductHandlerFunc(func(params operations.ProductParams, principal *int) operations.ProductResponder {
+	api.ProductHandler = operations.ProductHandlerFunc(func(params operations.ProductParams) operations.ProductResponder {
 		return operations.ProductNotImplemented()
 	})
 	api.ProductDELETEHandler = operations.ProductDELETEHandlerFunc(func(params operations.ProductDELETEParams, principal *int) operations.ProductDELETEResponder {

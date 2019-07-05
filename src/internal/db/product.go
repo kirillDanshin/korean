@@ -96,6 +96,10 @@ func (db *db) ProductCreate(ctx Ctx, product NewProduct) (*Product, error) {
 	return p, nil
 }
 
+func (db *db) ProductByID(ctx Ctx, id int) (*Product, error) {
+	return db.getProductByID(ctx, id)
+}
+
 // TODO refactoring sql query
 func (db *db) getProductByID(ctx Ctx, id int) (*Product, error) {
 	p := &Product{}
@@ -129,6 +133,7 @@ func (db *db) ProductDelete(ctx Ctx, productID int) (err error) {
 
 type Params struct {
 	BrandID int
+	Query   string
 	Pagination
 }
 
@@ -137,7 +142,18 @@ type Pagination struct {
 	Offset int
 }
 
-func (db *db) Products(ctx Ctx, params Params) ([]Product, error) {
+func (db *db) ListProduct(ctx Ctx, params Params) ([]Product, error) {
+	switch {
+	case params.BrandID > 0:
+		return db.productsByBrand(ctx, params.BrandID, params.Pagination)
+	case params.Query != "":
+		return nil, nil
+	default:
+		return db.products(ctx, params.Pagination)
+	}
+}
+
+func (db *db) products(ctx Ctx, pagination Pagination) ([]Product, error) {
 	str := "SELECT " + tableProduct.name + "." + tableProduct.columnID +
 		"," + tableProduct.name + "." + tableProduct.columnPrice +
 		"," + tableProduct.name + "." + tableProduct.columnApply +
@@ -151,11 +167,11 @@ func (db *db) Products(ctx Ctx, params Params) ([]Product, error) {
 		" = " + tableBrand.name + ".brand_id" +
 		" LIMIT $1 OFFSET $2"
 
-	return db.getProducts(ctx, str, params.Limit, params.Offset)
+	return db.getProducts(ctx, str, pagination.Limit, pagination.Offset)
 }
 
 // TODO refactoring sql query
-func (db *db) ProductsByBrand(ctx Ctx, params Params) ([]Product, error) {
+func (db *db) productsByBrand(ctx Ctx, brandID int, pagination Pagination) ([]Product, error) {
 	str := "SELECT " + tableProduct.name + "." + tableProduct.columnID +
 		"," + tableProduct.name + "." + tableProduct.columnPrice +
 		"," + tableProduct.name + "." + tableProduct.columnApply +
@@ -167,9 +183,9 @@ func (db *db) ProductsByBrand(ctx Ctx, params Params) ([]Product, error) {
 		" LEFT JOIN " + tableBrand.name +
 		" ON " + tableProduct.name + ".brand_id" +
 		" = " + tableBrand.name + ".brand_id" +
-		" WHERE brandID > $1 LIMIT $2 OFFSET $3"
+		" WHERE " + tableBrand.name + "." + tableBrand.columnID + " = $1 LIMIT $2 OFFSET $3"
 
-	return db.getProducts(ctx, str, params.BrandID, params.Limit, params.Offset)
+	return db.getProducts(ctx, str, brandID, pagination.Limit, pagination.Offset)
 }
 
 func (db *db) getProducts(ctx Ctx, str string, args ...interface{}) ([]Product, error) {

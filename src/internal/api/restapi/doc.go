@@ -8,7 +8,7 @@ Service storage brands and cosmetics.
     Schemes:
       http
     Host: localhost
-    BasePath: /api/storage
+    BasePath: /api
     Version: 0.0.1
 
     Consumes:

@@ -49,7 +49,7 @@ func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 			// return middleware.NotImplemented("operation BrandPOST has not yet been implemented")
 			return BrandPOSTNotImplemented()
 		}),
-		ListProductHandler: ListProductHandlerFunc(func(params ListProductParams, principal *int) ListProductResponder {
+		ListProductHandler: ListProductHandlerFunc(func(params ListProductParams) ListProductResponder {
 			// return middleware.NotImplemented("operation ListProduct has not yet been implemented")
 			return ListProductNotImplemented()
 		}),
@@ -57,7 +57,7 @@ func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 			// return middleware.NotImplemented("operation Login has not yet been implemented")
 			return LoginNotImplemented()
 		}),
-		ProductHandler: ProductHandlerFunc(func(params ProductParams, principal *int) ProductResponder {
+		ProductHandler: ProductHandlerFunc(func(params ProductParams) ProductResponder {
 			// return middleware.NotImplemented("operation Product has not yet been implemented")
 			return ProductNotImplemented()
 		}),
