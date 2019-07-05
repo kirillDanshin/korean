@@ -25,6 +25,7 @@ type (
 	// Storage products to send susi.
 	Storage interface {
 		GetProducts(ctx Ctx, since time.Time, ch chan<- db.Product) error
+		GetBrands(ctx Ctx, since time.Time) ([]db.Brand, error)
 	}
 
 	// Configuration contains config for api service.
@@ -63,6 +64,20 @@ func (s *server) GetChanges(since *Since, stream Storage_GetChangesServer) error
 		}
 
 	}
+}
+
+func (s *server) GetBrands(ctx Ctx, since *Since) (*Brands, error) {
+	brandsStoreFormat, err := s.store.GetBrands(ctx, time.Unix(since.UNIX, 0))
+	if err != nil {
+		return nil, err
+	}
+
+	brands := make([]*Brand, len(brandsStoreFormat))
+	for i := range brandsStoreFormat {
+		brands[i] = &Brand{Id: int32(brandsStoreFormat[i].Id), Name: brandsStoreFormat[i].Name}
+	}
+
+	return &Brands{Brands: brands}, nil
 }
 
 func dispatcher(setProduct <-chan db.Product, delProduct <-chan int) <-chan *ProductEvent {

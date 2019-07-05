@@ -1,8 +1,9 @@
 syntax = "proto3";
-package storage;
+package channels;
 
 service Storage {
     rpc GetChanges (Since) returns (stream ProductEvent);
+    rpc GetBrands (Since) returns (Brands);
 }
 
 message Since {
@@ -30,3 +31,11 @@ message DelProduct {
     int32 id = 1;
 }
 
+message Brands {
+    repeated Brand brands = 1;
+}
+
+message Brand {
+    int32 id = 1;
+    string name = 2;
+}

@@ -107,6 +107,7 @@ definitions:
       - description
       - apply
       - price
+      - brandName
     properties:
       id:
         $ref: '#/definitions/ID'
@@ -121,6 +122,8 @@ definitions:
       price:
         type: integer
       url:
+        type: string
+      brandName:
         type: string
 
   ID:

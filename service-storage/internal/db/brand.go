@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/pkg/errors"
+	"time"
 )
 
 // nolint
@@ -27,6 +28,11 @@ type (
 	NewBrand struct {
 		Name string
 	}
+
+	Brand struct {
+		Id   int    `db:"brand_id"`
+		Name string `db:"name"`
+	}
 )
 
 // BrandCreate - create new brand.
@@ -43,4 +49,13 @@ func (db *db) BrandDelete(ctx Ctx, brandID int) (err error) {
 	_, err = db.conn.ExecContext(ctx, str, brandID)
 
 	return errors.Wrapf(err, "failed to remove brand")
+}
+
+func (db *db) GetBrands(ctx Ctx, since time.Time) ([]Brand, error) {
+	var brands []Brand
+	str := "SELECT " + tableBrand.columnID + "," + tableBrand.columnName + " FROM " + tableBrand.name +
+		" WHERE created_at > $1"
+	err := db.conn.SelectContext(ctx, &brands, str, since)
+
+	return brands, errors.Wrapf(err, "failed to ger brands")
 }

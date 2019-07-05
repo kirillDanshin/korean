@@ -6,10 +6,7 @@ github.com/PuerkitoBio/urlesc
 github.com/asaskevich/govalidator
 # github.com/docker/go-units v0.4.0
 github.com/docker/go-units
-# github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
-github.com/globalsign/mgo/bson
-github.com/globalsign/mgo/internal/json
-# github.com/go-openapi/analysis v0.19.2
+# github.com/go-openapi/analysis v0.19.4
 github.com/go-openapi/analysis
 github.com/go-openapi/analysis/internal
 # github.com/go-openapi/errors v0.19.2
@@ -20,7 +17,7 @@ github.com/go-openapi/jsonpointer
 github.com/go-openapi/jsonreference
 # github.com/go-openapi/loads v0.19.2
 github.com/go-openapi/loads
-# github.com/go-openapi/runtime v0.19.2
+# github.com/go-openapi/runtime v0.19.3
 github.com/go-openapi/runtime
 github.com/go-openapi/runtime/flagext
 github.com/go-openapi/runtime/middleware
@@ -31,21 +28,44 @@ github.com/go-openapi/runtime/middleware/header
 github.com/go-openapi/runtime/middleware/untyped
 # github.com/go-openapi/spec v0.19.2
 github.com/go-openapi/spec
-# github.com/go-openapi/strfmt v0.19.0
+# github.com/go-openapi/strfmt v0.19.2
 github.com/go-openapi/strfmt
-# github.com/go-openapi/swag v0.19.3
+# github.com/go-openapi/swag v0.19.4
 github.com/go-openapi/swag
 # github.com/go-openapi/validate v0.19.2
 github.com/go-openapi/validate
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
 # github.com/jessevdk/go-flags v1.4.0
 github.com/jessevdk/go-flags
-# github.com/mailru/easyjson v0.0.0-20190614124828-94de47d64c63
+# github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
+github.com/mailru/easyjson
 github.com/mailru/easyjson/buffer
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
+# github.com/olivere/elastic/v7 v7.0.4
+github.com/olivere/elastic/v7
+github.com/olivere/elastic/v7/config
+github.com/olivere/elastic/v7/uritemplates
+# github.com/pkg/errors v0.8.1
+github.com/pkg/errors
+# github.com/powerman/structlog v0.5.0
+github.com/powerman/structlog
+# github.com/rs/cors v1.6.0
+github.com/rs/cors
+# github.com/sebest/xff v0.0.0-20160910043805-6c115e0ffa35
+github.com/sebest/xff
+# go.mongodb.org/mongo-driver v1.0.3
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
 # golang.org/x/net v0.0.0-20190628185345-da137c7871d7
+golang.org/x/net/context
 golang.org/x/net/netutil
 golang.org/x/net/idna
 # golang.org/x/text v0.3.2
