@@ -1,0 +1,300 @@
+swagger: '2.0'
+
+security:
+  - apiKey: []
+consumes:
+  - application/json
+produces:
+  - application/json
+
+info:
+  version: 0.0.1
+  title: Service-storage
+  description: Service storage brands and cosmetics.
+
+basePath: /api/storage
+
+schemes:
+  - http
+
+securityDefinitions:
+  apiKey:
+    description: Session token.
+    type: apiKey
+    in: header
+    name: AdminCookie
+
+responses:
+  ListBrand:
+    description: Getting a list of brands.
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/Brand'
+
+  ListProduct:
+    description: Receive a list of products.
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/Product'
+
+  OneProduct:
+    description: Getting one product.
+    schema:
+      $ref: '#/definitions/Product'
+
+  GenericError:
+    description: Generic error response.
+    schema:
+      $ref: '#/definitions/Error'
+
+  NoContent:
+    description: The server successfully processed the request and is not returning any content.
+
+
+paths:
+
+  /brand:
+    post:
+      description: "Create new brand"
+      operationId: brandPOST
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/BrandCreate'
+
+      responses:
+        '200': {$ref: '#/responses/ListBrand'}
+        default: {$ref: '#/responses/GenericError'}
+
+    get:
+      description: "Get list brand"
+      operationId: brandList
+
+      responses:
+        '200':  {$ref: '#/responses/ListBrand'}
+        default: {$ref: '#/responses/GenericError'}
+
+    delete:
+      description: "Delete brand"
+      operationId: brandDELETE
+      parameters:
+        - name: id
+          required: true
+          in: query
+          type: integer
+
+      responses:
+        '200': {$ref: '#/responses/NoContent'}
+        default: {$ref: '#/responses/GenericError'}
+
+  /products:
+    get:
+      operationId: listProduct
+      parameters:
+        - name: query
+          type: string
+          in: query
+        - name: brand
+          type: integer
+          in: query
+        - name: limit
+          type: integer
+          in: query
+          default: 25
+        - name: offset
+          type: integer
+          in: query
+          default: 0
+      responses:
+        '200':  {$ref: '#/responses/ListProduct'}
+        default: {$ref: '#/responses/GenericError'}
+
+  /product:
+    post:
+      description: "Create new product"
+      operationId: productPOST
+      parameters:
+        - name: args
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProductCreate'
+
+      responses:
+        '200': {$ref: '#/responses/OneProduct'}
+        default: {$ref: '#/responses/GenericError'}
+
+    delete:
+      description: "Delete product"
+      operationId: productDELETE
+      parameters:
+        - name: id
+          required: true
+          in: query
+          type: integer
+
+      responses:
+        '200': {$ref: '#/responses/NoContent'}
+        default: {$ref: '#/responses/GenericError'}
+
+  /product/{productID}:
+    get:
+      operationId: product
+      parameters:
+        - in: path
+          name: productID
+          description: Track ID.
+          required: true
+          type: integer
+      responses:
+        '200':  {$ref: '#/responses/OneProduct'}
+        default: {$ref: '#/responses/GenericError'}
+
+  /login:
+    post:
+      description: "Auth method."
+      operationId: login
+      security: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            $ref: '#/definitions/LoginInfo'
+      responses:
+        '200':
+          description: OK
+          headers:
+            AdminCookie:
+              type: string
+              description: Session token.
+          schema:
+            $ref: '#/definitions/UserInfo'
+        default: {$ref: '#/responses/GenericError'}
+
+definitions:
+
+  Brand:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        $ref: '#/definitions/ID'
+      name:
+        type: string
+
+  Product:
+    type: object
+    required:
+      - id
+      - name
+      - description
+      - apply
+      - price
+      - brandName
+    properties:
+      id:
+        $ref: '#/definitions/ID'
+      name:
+        type: string
+        minLength: 1
+        maxLength: 100
+      description:
+        type: string
+      apply:
+        type: string
+      price:
+        type: integer
+      url:
+        type: string
+      brandName:
+        type: string
+
+  LoginInfo:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        $ref: '#/definitions/Username'
+      password:
+        $ref: '#/definitions/Password'
+
+  BrandCreate:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        minLength: 1
+        maxLength: 100
+
+  ProductCreate:
+    type: object
+    required:
+      - name
+      - description
+      - apply
+      - price
+      - brandID
+    properties:
+      name:
+        type: string
+        minLength: 1
+        maxLength: 100
+      description:
+        type: string
+      apply:
+        type: string
+      price:
+        type: integer
+      brandID:
+        type: integer
+
+  UserInfo:
+    type: object
+    required:
+      - username
+      - token
+    properties:
+      token:
+        type: string
+      username:
+        $ref: '#/definitions/Username'
+
+  Username:
+    type: string
+    minLength: 1
+    maxLength: 32
+    description: User login.
+
+  Password:
+    type: string
+    format: password
+    minLength: 1
+    maxLength: 100
+    description: User password.
+
+  ID:
+    type: integer
+    description: Object ID.
+
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        description: Either same as HTTP Status Code.
+        type: integer
+        format: int32
+      message:
+        type: string
