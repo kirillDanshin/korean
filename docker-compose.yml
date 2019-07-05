@@ -53,7 +53,7 @@ services:
       restart: always
       entrypoint: /storage
       volumes:
-        - ../upload:/upload
+        - ./service-storage/upload:/upload
       command:
         - "--db.host=postgresql"
         - "--sessionStore.host=redis"
