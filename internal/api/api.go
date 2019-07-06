@@ -74,7 +74,7 @@ func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configurat
 		svc.productGET,
 		svc.productDELETE,
 		svc.productPOST,
-		nil,
+		svc.avatarPUT,
 		nil,
 	)
 
