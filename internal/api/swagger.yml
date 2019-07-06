@@ -212,7 +212,7 @@ definitions:
         type: string
       price:
         type: integer
-      url:
+      avatarUrl:
         type: string
       brandName:
         type: string

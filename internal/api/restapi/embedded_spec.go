@@ -333,6 +333,9 @@ func init() {
         "apply": {
           "type": "string"
         },
+        "avatarUrl": {
+          "type": "string"
+        },
         "brandName": {
           "type": "string"
         },
@@ -349,9 +352,6 @@ func init() {
         },
         "price": {
           "type": "integer"
-        },
-        "url": {
-          "type": "string"
         }
       }
     },
@@ -820,6 +820,9 @@ func init() {
         "apply": {
           "type": "string"
         },
+        "avatarUrl": {
+          "type": "string"
+        },
         "brandName": {
           "type": "string"
         },
@@ -836,9 +839,6 @@ func init() {
         },
         "price": {
           "type": "integer"
-        },
-        "url": {
-          "type": "string"
         }
       }
     },

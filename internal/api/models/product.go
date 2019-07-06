@@ -21,6 +21,9 @@ type Product struct {
 	// Required: true
 	Apply *string `json:"apply"`
 
+	// avatar Url
+	AvatarURL string `json:"avatarUrl,omitempty"`
+
 	// brand name
 	// Required: true
 	BrandName *string `json:"brandName"`
@@ -42,9 +45,6 @@ type Product struct {
 	// price
 	// Required: true
 	Price *int64 `json:"price"`
-
-	// url
-	URL string `json:"url,omitempty"`
 }
 
 // Validate validates this product

@@ -115,6 +115,6 @@ func convertProduct(product *db.Product) *models2.Product {
 		ID:          models2.ID(product.ID),
 		Name:        swag.String(product.Name),
 		Price:       swag.Int64(int64(product.Price)),
-		URL:         product.Avatar.String,
+		AvatarURL:   product.Avatar.String,
 	}
 }
