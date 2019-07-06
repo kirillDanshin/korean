@@ -1,12 +1,12 @@
 package api
 
 import (
-	operations2 "github.com/ZergsLaw/korean/internal/api/restapi/operations"
+	 "github.com/ZergsLaw/korean/internal/api/restapi/operations"
 	"github.com/ZergsLaw/korean/internal/db"
 	"net/http"
 )
 
-func (api *service) productPOST(params operations2.ProductPOSTParams, principal *int) operations2.ProductPOSTResponder {
+func (api *service) productPOST(params operations.ProductPOSTParams, principal *int) operations.ProductPOSTResponder {
 	ctx := params.HTTPRequest.Context()
 
 	newProduct := db.NewProduct{
@@ -21,9 +21,9 @@ func (api *service) productPOST(params operations2.ProductPOSTParams, principal 
 	if err != nil {
 		api.log.Warn(err)
 
-		return operations2.NewProductPOSTDefault(http.StatusInternalServerError).
+		return operations.NewProductPOSTDefault(http.StatusInternalServerError).
 			WithPayload(createErr(http.StatusInternalServerError))
 	}
 
-	return operations2.NewProductPOSTOK().WithPayload(convertProduct(product))
+	return operations.NewProductPOSTOK().WithPayload(convertProduct(product))
 }

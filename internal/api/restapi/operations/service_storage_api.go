@@ -23,20 +23,21 @@ import (
 // NewServiceStorageAPI creates a new ServiceStorage instance
 func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 	return &ServiceStorageAPI{
-		handlers:            make(map[string]map[string]http.Handler),
-		formats:             strfmt.Default,
-		defaultConsumes:     "application/json",
-		defaultProduces:     "application/json",
-		customConsumers:     make(map[string]runtime.Consumer),
-		customProducers:     make(map[string]runtime.Producer),
-		ServerShutdown:      func() {},
-		spec:                spec,
-		ServeError:          errors.ServeError,
-		BasicAuthenticator:  security.BasicAuth,
-		APIKeyAuthenticator: security.APIKeyAuth,
-		BearerAuthenticator: security.BearerAuth,
-		JSONConsumer:        runtime.JSONConsumer(),
-		JSONProducer:        runtime.JSONProducer(),
+		handlers:              make(map[string]map[string]http.Handler),
+		formats:               strfmt.Default,
+		defaultConsumes:       "application/json",
+		defaultProduces:       "application/json",
+		customConsumers:       make(map[string]runtime.Consumer),
+		customProducers:       make(map[string]runtime.Producer),
+		ServerShutdown:        func() {},
+		spec:                  spec,
+		ServeError:            errors.ServeError,
+		BasicAuthenticator:    security.BasicAuth,
+		APIKeyAuthenticator:   security.APIKeyAuth,
+		BearerAuthenticator:   security.BearerAuth,
+		JSONConsumer:          runtime.JSONConsumer(),
+		MultipartformConsumer: runtime.DiscardConsumer,
+		JSONProducer:          runtime.JSONProducer(),
 		BrandDELETEHandler: BrandDELETEHandlerFunc(func(params BrandDELETEParams, principal *int) BrandDELETEResponder {
 			// return middleware.NotImplemented("operation BrandDELETE has not yet been implemented")
 			return BrandDELETENotImplemented()
@@ -48,6 +49,10 @@ func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 		BrandPOSTHandler: BrandPOSTHandlerFunc(func(params BrandPOSTParams, principal *int) BrandPOSTResponder {
 			// return middleware.NotImplemented("operation BrandPOST has not yet been implemented")
 			return BrandPOSTNotImplemented()
+		}),
+		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *int) GetUserResponder {
+			// return middleware.NotImplemented("operation GetUser has not yet been implemented")
+			return GetUserNotImplemented()
 		}),
 		ListProductHandler: ListProductHandlerFunc(func(params ListProductParams) ListProductResponder {
 			// return middleware.NotImplemented("operation ListProduct has not yet been implemented")
@@ -68,6 +73,10 @@ func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 		ProductPOSTHandler: ProductPOSTHandlerFunc(func(params ProductPOSTParams, principal *int) ProductPOSTResponder {
 			// return middleware.NotImplemented("operation ProductPOST has not yet been implemented")
 			return ProductPOSTNotImplemented()
+		}),
+		UploadAvatarProductHandler: UploadAvatarProductHandlerFunc(func(params UploadAvatarProductParams, principal *int) UploadAvatarProductResponder {
+			// return middleware.NotImplemented("operation UploadAvatarProduct has not yet been implemented")
+			return UploadAvatarProductNotImplemented()
 		}),
 
 		// Applies when the "AdminCookie" header is set
@@ -104,6 +113,8 @@ type ServiceStorageAPI struct {
 
 	// JSONConsumer registers a consumer for a "application/json" mime type
 	JSONConsumer runtime.Consumer
+	// MultipartformConsumer registers a consumer for a "multipart/form-data" mime type
+	MultipartformConsumer runtime.Consumer
 
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
@@ -121,6 +132,8 @@ type ServiceStorageAPI struct {
 	BrandListHandler BrandListHandler
 	// BrandPOSTHandler sets the operation handler for the brand p o s t operation
 	BrandPOSTHandler BrandPOSTHandler
+	// GetUserHandler sets the operation handler for the get user operation
+	GetUserHandler GetUserHandler
 	// ListProductHandler sets the operation handler for the list product operation
 	ListProductHandler ListProductHandler
 	// LoginHandler sets the operation handler for the login operation
@@ -131,6 +144,8 @@ type ServiceStorageAPI struct {
 	ProductDELETEHandler ProductDELETEHandler
 	// ProductPOSTHandler sets the operation handler for the product p o s t operation
 	ProductPOSTHandler ProductPOSTHandler
+	// UploadAvatarProductHandler sets the operation handler for the upload avatar product operation
+	UploadAvatarProductHandler UploadAvatarProductHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -190,6 +205,10 @@ func (o *ServiceStorageAPI) Validate() error {
 		unregistered = append(unregistered, "JSONConsumer")
 	}
 
+	if o.MultipartformConsumer == nil {
+		unregistered = append(unregistered, "MultipartformConsumer")
+	}
+
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
 	}
@@ -210,6 +229,10 @@ func (o *ServiceStorageAPI) Validate() error {
 		unregistered = append(unregistered, "BrandPOSTHandler")
 	}
 
+	if o.GetUserHandler == nil {
+		unregistered = append(unregistered, "GetUserHandler")
+	}
+
 	if o.ListProductHandler == nil {
 		unregistered = append(unregistered, "ListProductHandler")
 	}
@@ -228,6 +251,10 @@ func (o *ServiceStorageAPI) Validate() error {
 
 	if o.ProductPOSTHandler == nil {
 		unregistered = append(unregistered, "ProductPOSTHandler")
+	}
+
+	if o.UploadAvatarProductHandler == nil {
+		unregistered = append(unregistered, "UploadAvatarProductHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -277,6 +304,9 @@ func (o *ServiceStorageAPI) ConsumersFor(mediaTypes []string) map[string]runtime
 
 		case "application/json":
 			result["application/json"] = o.JSONConsumer
+
+		case "multipart/form-data":
+			result["multipart/form-data"] = o.MultipartformConsumer
 
 		}
 
@@ -358,6 +388,11 @@ func (o *ServiceStorageAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/user"] = NewGetUser(o.context, o.GetUserHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/products"] = NewListProduct(o.context, o.ListProductHandler)
 
 	if o.handlers["POST"] == nil {
@@ -379,6 +414,11 @@ func (o *ServiceStorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/product"] = NewProductPOST(o.context, o.ProductPOSTHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/avatar/{productID}"] = NewUploadAvatarProduct(o.context, o.UploadAvatarProductHandler)
 
 }
 

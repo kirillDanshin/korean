@@ -13,7 +13,7 @@ info:
   description: Service storage brands and cosmetics.
 
 basePath: /api
-
+# TODO Добавить метод получения профиля
 schemes:
   - http
 
@@ -104,8 +104,10 @@ paths:
           in: query
         - name: limit
           type: integer
+          minimum: 1
+          maximum: 1000
           in: query
-          default: 25
+          default: 1000
         - name: offset
           type: integer
           in: query
@@ -154,6 +156,36 @@ paths:
           type: integer
       responses:
         '200':  {$ref: '#/responses/OneProduct'}
+        default: {$ref: '#/responses/GenericError'}
+
+  /user:
+    get:
+      operationId: getUser
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserInfo'
+        default: {$ref: '#/responses/GenericError'}
+
+  /avatar/{productID}:
+    put:
+      operationId: uploadAvatarProduct
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: path
+          name: productID
+          description: Product ID.
+          required: true
+          type: integer
+        - in: formData
+          name: file
+          type: file
+          required: true
+
+      responses:
+        '200': {$ref: '#/responses/NoContent'}
         default: {$ref: '#/responses/GenericError'}
 
   /login:

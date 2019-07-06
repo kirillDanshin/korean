@@ -35,6 +35,37 @@ func init() {
   },
   "basePath": "/api",
   "paths": {
+    "/avatar/{productID}": {
+      "put": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "operationId": "uploadAvatarProduct",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Product ID.",
+            "name": "productID",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "file",
+            "name": "file",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/NoContent"
+          },
+          "default": {
+            "$ref": "#/responses/GenericError"
+          }
+        }
+      }
+    },
     "/brand": {
       "get": {
         "description": "Get list brand",
@@ -207,8 +238,10 @@ func init() {
             "in": "query"
           },
           {
+            "maximum": 1000,
+            "minimum": 1,
             "type": "integer",
-            "default": 25,
+            "default": 1000,
             "name": "limit",
             "in": "query"
           },
@@ -222,6 +255,22 @@ func init() {
         "responses": {
           "200": {
             "$ref": "#/responses/ListProduct"
+          },
+          "default": {
+            "$ref": "#/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
+            }
           },
           "default": {
             "$ref": "#/responses/GenericError"
@@ -473,6 +522,40 @@ func init() {
   },
   "basePath": "/api",
   "paths": {
+    "/avatar/{productID}": {
+      "put": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "operationId": "uploadAvatarProduct",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Product ID.",
+            "name": "productID",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "file",
+            "name": "file",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The server successfully processed the request and is not returning any content."
+          },
+          "default": {
+            "description": "Generic error response.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/brand": {
       "get": {
         "description": "Get list brand",
@@ -684,8 +767,10 @@ func init() {
             "in": "query"
           },
           {
+            "maximum": 1000,
+            "minimum": 1,
             "type": "integer",
-            "default": 25,
+            "default": 1000,
             "name": "limit",
             "in": "query"
           },
@@ -704,6 +789,25 @@ func init() {
               "items": {
                 "$ref": "#/definitions/Product"
               }
+            }
+          },
+          "default": {
+            "description": "Generic error response.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
             }
           },
           "default": {

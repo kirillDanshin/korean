@@ -1,20 +1,19 @@
 package api
 
 import (
-	models2 "github.com/ZergsLaw/korean/internal/api/models"
-	restapi2 "github.com/ZergsLaw/korean/internal/api/restapi"
+	"github.com/ZergsLaw/korean/internal/api/models"
+	"github.com/ZergsLaw/korean/internal/api/restapi"
 	"github.com/ZergsLaw/korean/internal/db"
 	"github.com/ZergsLaw/korean/internal/session"
-	"net"
-	"net/http"
-	"strconv"
-
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime/security"
 	"github.com/go-openapi/swag"
 	"github.com/pkg/errors"
 	"github.com/powerman/structlog"
 	"golang.org/x/net/context"
+	"net"
+	"net/http"
+	"strconv"
 )
 
 type (
@@ -43,7 +42,7 @@ type (
 )
 
 // Serve must be called once before using this package.
-func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configuration) (*restapi2.Server, error) {
+func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configuration) (*restapi.Server, error) {
 	svc := service{
 		adminPass:     cfg.AdminPass,
 		adminUsername: cfg.AdminUsername,
@@ -52,15 +51,16 @@ func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configurat
 		session:       sessionStore,
 	}
 
-	swaggerSpec, err := loads.Embedded(restapi2.SwaggerJSON, restapi2.FlatSwaggerJSON)
+	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed loads embedded")
 	}
 
-	searchAPI := restapi2.BuildAPI(
+	searchAPI := restapi.BuildAPI(
 		swaggerSpec,
 		nil,
 		log.Printf,
+		nil,
 		nil,
 		nil,
 		sessionStore.GetID,
@@ -68,11 +68,13 @@ func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configurat
 		svc.brandDELETE,
 		svc.brandGET,
 		svc.brandPOST,
+		svc.userGET,
 		svc.productsGET,
 		svc.login,
 		svc.productGET,
 		svc.productDELETE,
 		svc.productPOST,
+		nil,
 		nil,
 	)
 
@@ -81,7 +83,7 @@ func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configurat
 		return logger(recovery(handleCORS(handler)))
 	}
 
-	server := restapi2.NewServer(searchAPI)
+	server := restapi.NewServer(searchAPI)
 	server.SetHandler(globalMiddleware(searchAPI.Serve(accessLog)))
 	server.Port = cfg.Port
 	server.Host = cfg.Host
@@ -90,15 +92,15 @@ func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configurat
 	return server, nil
 }
 
-func createErr(code int) *models2.Error {
-	return &models2.Error{
+func createErr(code int) *models.Error {
+	return &models.Error{
 		Code:    swag.Int32(int32(code)),
 		Message: swag.String(http.StatusText(code)),
 	}
 }
 
-func convertArrayProduct(products []db.Product) []*models2.Product {
-	convertProducts := make([]*models2.Product, len(products))
+func convertArrayProduct(products []db.Product) []*models.Product {
+	convertProducts := make([]*models.Product, len(products))
 
 	for i := range products {
 		convertProducts[i] = convertProduct(&products[i])
@@ -107,14 +109,15 @@ func convertArrayProduct(products []db.Product) []*models2.Product {
 	return convertProducts
 }
 
-func convertProduct(product *db.Product) *models2.Product {
-	return &models2.Product{
+func convertProduct(product *db.Product) *models.Product {
+	return &models.Product{
 		Apply:       swag.String(product.Apply),
 		BrandName:   swag.String(product.Brand),
 		Description: swag.String(product.Description),
-		ID:          models2.ID(product.ID),
+		ID:          models.ID(product.ID),
 		Name:        swag.String(product.Name),
 		Price:       swag.Int64(int64(product.Price)),
-		AvatarURL:   product.Avatar.String,
+		// TODO Remove hard code
+		AvatarURL: "https://fainaidea.com/wp-content/uploads/2019/06/original.jpg",
 	}
 }

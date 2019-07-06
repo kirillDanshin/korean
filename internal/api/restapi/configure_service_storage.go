@@ -30,6 +30,8 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
+	api.MultipartformConsumer = runtime.DiscardConsumer
+
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the "AdminCookie" header is set
@@ -51,6 +53,9 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 	api.BrandPOSTHandler = operations.BrandPOSTHandlerFunc(func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder {
 		return operations.BrandPOSTNotImplemented()
 	})
+	api.GetUserHandler = operations.GetUserHandlerFunc(func(params operations.GetUserParams, principal *int) operations.GetUserResponder {
+		return operations.GetUserNotImplemented()
+	})
 	api.ListProductHandler = operations.ListProductHandlerFunc(func(params operations.ListProductParams) operations.ListProductResponder {
 		return operations.ListProductNotImplemented()
 	})
@@ -65,6 +70,9 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 	})
 	api.ProductPOSTHandler = operations.ProductPOSTHandlerFunc(func(params operations.ProductPOSTParams, principal *int) operations.ProductPOSTResponder {
 		return operations.ProductPOSTNotImplemented()
+	})
+	api.UploadAvatarProductHandler = operations.UploadAvatarProductHandlerFunc(func(params operations.UploadAvatarProductParams, principal *int) operations.UploadAvatarProductResponder {
+		return operations.UploadAvatarProductNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}

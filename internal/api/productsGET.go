@@ -1,12 +1,12 @@
 package api
 
 import (
-	operations2 "github.com/ZergsLaw/korean/internal/api/restapi/operations"
+	 "github.com/ZergsLaw/korean/internal/api/restapi/operations"
 	"github.com/ZergsLaw/korean/internal/db"
 	"net/http"
 )
 
-func (api *service) productsGET(params operations2.ListProductParams) operations2.ListProductResponder {
+func (api *service) productsGET(params operations.ListProductParams) operations.ListProductResponder {
 	ctx := params.HTTPRequest.Context()
 
 	queryParams := db.Params{
@@ -22,11 +22,11 @@ func (api *service) productsGET(params operations2.ListProductParams) operations
 	if err != nil {
 		api.log.Warn(err)
 
-		return operations2.NewListProductDefault(http.StatusInternalServerError).
+		return operations.NewListProductDefault(http.StatusInternalServerError).
 			WithPayload(createErr(http.StatusInternalServerError))
 	}
 
-	return operations2.NewListProductOK().WithPayload(convertArrayProduct(products))
+	return operations.NewListProductOK().WithPayload(convertArrayProduct(products))
 }
 
 func intPoint(point *int64) int {

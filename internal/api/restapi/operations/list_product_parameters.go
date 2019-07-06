@@ -12,6 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -23,7 +24,7 @@ func NewListProductParams() ListProductParams {
 	var (
 		// initialize parameters with default values
 
-		limitDefault  = int64(25)
+		limitDefault  = int64(1000)
 		offsetDefault = int64(0)
 	)
 
@@ -48,8 +49,10 @@ type ListProductParams struct {
 	*/
 	Brand *int64
 	/*
+	  Maximum: 1000
+	  Minimum: 1
 	  In: query
-	  Default: 25
+	  Default: 1000
 	*/
 	Limit *int64
 	/*
@@ -141,6 +144,24 @@ func (o *ListProductParams) bindLimit(rawData []string, hasKey bool, formats str
 		return errors.InvalidType("limit", "query", "int64", raw)
 	}
 	o.Limit = &value
+
+	if err := o.validateLimit(formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateLimit carries on validations for parameter Limit
+func (o *ListProductParams) validateLimit(formats strfmt.Registry) error {
+
+	if err := validate.MinimumInt("limit", "query", int64(*o.Limit), 1, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("limit", "query", int64(*o.Limit), 1000, false); err != nil {
+		return err
+	}
 
 	return nil
 }

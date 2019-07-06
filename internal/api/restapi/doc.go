@@ -13,6 +13,7 @@ Service storage brands and cosmetics.
 
     Consumes:
     - application/json
+    - multipart/form-data
 
     Produces:
     - application/json

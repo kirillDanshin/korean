@@ -19,6 +19,7 @@ func BuildAPI(
 	Logger func(string, ...interface{}),
 
 	JSONConsumer func(r io.Reader, target interface{}) error,
+	MultipartformConsumer func(r io.Reader, target interface{}) error,
 
 	JSONProducer func(w io.Writer, data interface{}) error,
 
@@ -28,11 +29,13 @@ func BuildAPI(
 	BrandDELETE func(params operations.BrandDELETEParams, principal *int) operations.BrandDELETEResponder,
 	BrandList func(params operations.BrandListParams, principal *int) operations.BrandListResponder,
 	BrandPOST func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder,
+	GetUser func(params operations.GetUserParams, principal *int) operations.GetUserResponder,
 	ListProduct func(params operations.ListProductParams) operations.ListProductResponder,
 	Login func(params operations.LoginParams) operations.LoginResponder,
 	Product func(params operations.ProductParams) operations.ProductResponder,
 	ProductDELETE func(params operations.ProductDELETEParams, principal *int) operations.ProductDELETEResponder,
 	ProductPOST func(params operations.ProductPOSTParams, principal *int) operations.ProductPOSTResponder,
+	UploadAvatarProduct func(params operations.UploadAvatarProductParams, principal *int) operations.UploadAvatarProductResponder,
 
 	ServerShutdown func(),
 
@@ -49,6 +52,10 @@ func BuildAPI(
 
 	if JSONConsumer != nil {
 		api.JSONConsumer = runtime.ConsumerFunc(JSONConsumer)
+	}
+
+	if MultipartformConsumer != nil {
+		api.MultipartformConsumer = runtime.ConsumerFunc(MultipartformConsumer)
 	}
 
 	if JSONProducer != nil {
@@ -74,6 +81,10 @@ func BuildAPI(
 		api.BrandPOSTHandler = operations.BrandPOSTHandlerFunc(BrandPOST)
 	}
 
+	if GetUser != nil {
+		api.GetUserHandler = operations.GetUserHandlerFunc(GetUser)
+	}
+
 	if ListProduct != nil {
 		api.ListProductHandler = operations.ListProductHandlerFunc(ListProduct)
 	}
@@ -92,6 +103,10 @@ func BuildAPI(
 
 	if ProductPOST != nil {
 		api.ProductPOSTHandler = operations.ProductPOSTHandlerFunc(ProductPOST)
+	}
+
+	if UploadAvatarProduct != nil {
+		api.UploadAvatarProductHandler = operations.UploadAvatarProductHandlerFunc(UploadAvatarProduct)
 	}
 
 	if ServerShutdown != nil {
