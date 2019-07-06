@@ -18,10 +18,8 @@ const (
     brand_id        	 serial primary key,
     name     		 	 text not null,
 	is_delete            boolean DEFAULT false,
-	created_at 		 	 TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	deleted_at 		 	 TIMESTAMPTZ,
-	unique 				 (name, deleted_at)
-)`
+	created_at 		 	 TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);  CREATE UNIQUE INDEX if not exists brands_unique_name ON brands(name) WHERE is_delete = false;`
 )
 
 type (
@@ -58,7 +56,7 @@ func (db *db) getBrands(ctx Ctx) ([]Brand, error) {
 
 // BrandDelete - remove brand.
 func (db *db) BrandDelete(ctx Ctx, brandID int) (err error) {
-	str := "UPDATE " + tableBrand.name + " SET is_delete=true, deleted_at = Now() WHERE " + tableBrand.columnID + "= $1"
+	str := "UPDATE " + tableBrand.name + " SET is_delete=true WHERE " + tableBrand.columnID + "= $1"
 	_, err = db.conn.ExecContext(ctx, str, brandID)
 
 	return errors.Wrapf(err, "failed to remove brand")
