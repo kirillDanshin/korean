@@ -32,6 +32,7 @@ func flagParse() {
 
 	flag.IntVar(&cfg.api.Port, "port", 8080, "Server port")
 	flag.StringVar(&cfg.api.Host, "host", hostname, "Server host")
+	flag.StringVar(&cfg.api.ServerHOST, "server.host", "http://31.184.252.31:3000/", "Server host.")
 
 	// TODO remove, temporary solution
 	flag.StringVar(&cfg.api.AdminUsername, "username", "value", "Admin username.")

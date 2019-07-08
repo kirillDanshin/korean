@@ -1,7 +1,7 @@
 package api
 
 import (
-	 "github.com/ZergsLaw/korean/internal/api/restapi/operations"
+	"github.com/ZergsLaw/korean/internal/api/restapi/operations"
 	"net/http"
 )
 
@@ -16,5 +16,5 @@ func (api *service) productGET(params operations.ProductParams) operations.Produ
 			WithPayload(createErr(http.StatusInternalServerError))
 	}
 
-	return operations.NewProductOK().WithPayload(convertProduct(product))
+	return operations.NewProductOK().WithPayload(convertProduct(api.serverHOST, product))
 }

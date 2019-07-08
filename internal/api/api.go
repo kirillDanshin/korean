@@ -21,15 +21,18 @@ type (
 		adminUsername string
 		adminPass     string
 
-		storage db.Storage
-		session session.Store
-		log     Log
+		serverHOST string
+		storage    db.Storage
+		session    session.Store
+		log        Log
 	}
 
 	// Configuration contains config for api service.
 	Configuration struct {
 		AdminUsername string
 		AdminPass     string
+
+		ServerHOST string
 
 		Port int
 		Host string
@@ -49,6 +52,7 @@ func Serve(log Log, store db.Storage, sessionStore session.Store, cfg Configurat
 		storage:       store,
 		log:           log,
 		session:       sessionStore,
+		serverHOST:    cfg.ServerHOST,
 	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
@@ -99,17 +103,17 @@ func createErr(code int) *models.Error {
 	}
 }
 
-func convertArrayProduct(products []db.Product) []*models.Product {
+func convertArrayProduct(serverHOST string, products []db.Product) []*models.Product {
 	convertProducts := make([]*models.Product, len(products))
 
 	for i := range products {
-		convertProducts[i] = convertProduct(&products[i])
+		convertProducts[i] = convertProduct(serverHOST, &products[i])
 	}
 
 	return convertProducts
 }
 
-func convertProduct(product *db.Product) *models.Product {
+func convertProduct(serverHOST string, product *db.Product) *models.Product {
 	return &models.Product{
 		Apply:       swag.String(product.Apply),
 		BrandName:   swag.String(product.Brand),
@@ -117,6 +121,6 @@ func convertProduct(product *db.Product) *models.Product {
 		ID:          models.ID(product.ID),
 		Name:        swag.String(product.Name),
 		Price:       swag.Int64(int64(product.Price)),
-		AvatarURL:   product.Avatar.String,
+		AvatarURL:   serverHOST + product.Avatar.String,
 	}
 }
