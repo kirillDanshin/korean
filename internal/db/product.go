@@ -2,7 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"github.com/ZergsLaw/korean/internal/filestorage"
 	"github.com/pkg/errors"
+	"io"
 )
 
 // nolint
@@ -64,6 +66,18 @@ type (
 		BrandID     int
 	}
 )
+
+func (db *db) SetAvatar(ctx Ctx, productID int, file io.ReadCloser) error {
+	fileName, err := filestorage.SaveAvatar(ctx, productID, file)
+	if err != nil {
+		return err
+	}
+
+	str := "UPDATE " + tableProduct.name + " SET avatar=$1 WHERE " + tableProduct.columnID + "= $2"
+	_, err = db.conn.ExecContext(ctx, str, fileName, productID)
+
+	return errors.Wrapf(err, "failed to remove brand")
+}
 
 // BrandCreate - create new brand.
 func (db *db) ProductCreate(ctx Ctx, product NewProduct) (*Product, error) {

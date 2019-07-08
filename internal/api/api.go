@@ -117,7 +117,6 @@ func convertProduct(product *db.Product) *models.Product {
 		ID:          models.ID(product.ID),
 		Name:        swag.String(product.Name),
 		Price:       swag.Int64(int64(product.Price)),
-		// TODO Remove hard code
-		AvatarURL: "https://fainaidea.com/wp-content/uploads/2019/06/original.jpg",
+		AvatarURL:   product.Avatar.String,
 	}
 }

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"io"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -20,6 +21,7 @@ type (
 		ProductCreate(ctx Ctx, product NewProduct) (*Product, error)
 		ProductDelete(ctx Ctx, productID int) (err error)
 		ProductByID(ctx Ctx, id int) (*Product, error)
+		SetAvatar(ctx Ctx, productID int, file io.ReadCloser) error
 		ListProduct(ctx Ctx, params Params) ([]Product, error)
 	}
 
