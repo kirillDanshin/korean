@@ -27,7 +27,7 @@ func BuildAPI(
 	APIAuthorizer runtime.Authorizer,
 
 	BrandDELETE func(params operations.BrandDELETEParams, principal *int) operations.BrandDELETEResponder,
-	BrandList func(params operations.BrandListParams, principal *int) operations.BrandListResponder,
+	BrandList func(params operations.BrandListParams) operations.BrandListResponder,
 	BrandPOST func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder,
 	GetUser func(params operations.GetUserParams, principal *int) operations.GetUserResponder,
 	ListProduct func(params operations.ListProductParams) operations.ListProductResponder,

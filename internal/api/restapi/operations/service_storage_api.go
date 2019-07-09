@@ -42,7 +42,7 @@ func NewServiceStorageAPI(spec *loads.Document) *ServiceStorageAPI {
 			// return middleware.NotImplemented("operation BrandDELETE has not yet been implemented")
 			return BrandDELETENotImplemented()
 		}),
-		BrandListHandler: BrandListHandlerFunc(func(params BrandListParams, principal *int) BrandListResponder {
+		BrandListHandler: BrandListHandlerFunc(func(params BrandListParams) BrandListResponder {
 			// return middleware.NotImplemented("operation BrandList has not yet been implemented")
 			return BrandListNotImplemented()
 		}),

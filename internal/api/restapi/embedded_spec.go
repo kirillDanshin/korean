@@ -68,6 +68,7 @@ func init() {
     },
     "/brand": {
       "get": {
+        "security": [],
         "description": "Get list brand",
         "operationId": "brandList",
         "responses": {
@@ -558,6 +559,7 @@ func init() {
     },
     "/brand": {
       "get": {
+        "security": [],
         "description": "Get list brand",
         "operationId": "brandList",
         "responses": {

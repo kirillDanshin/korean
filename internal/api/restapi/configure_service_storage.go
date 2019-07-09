@@ -47,7 +47,7 @@ func configureAPI(api *operations.ServiceStorageAPI) http.Handler {
 	api.BrandDELETEHandler = operations.BrandDELETEHandlerFunc(func(params operations.BrandDELETEParams, principal *int) operations.BrandDELETEResponder {
 		return operations.BrandDELETENotImplemented()
 	})
-	api.BrandListHandler = operations.BrandListHandlerFunc(func(params operations.BrandListParams, principal *int) operations.BrandListResponder {
+	api.BrandListHandler = operations.BrandListHandlerFunc(func(params operations.BrandListParams) operations.BrandListResponder {
 		return operations.BrandListNotImplemented()
 	})
 	api.BrandPOSTHandler = operations.BrandPOSTHandlerFunc(func(params operations.BrandPOSTParams, principal *int) operations.BrandPOSTResponder {

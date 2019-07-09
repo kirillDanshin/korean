@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (api *service) brandGET(params operations.BrandListParams, principal *int) operations.BrandListResponder {
+func (api *service) brandGET(params operations.BrandListParams) operations.BrandListResponder {
 	ctx := params.HTTPRequest.Context()
 
 	brands, err := api.storage.GetBrands(ctx)
