@@ -111,6 +111,11 @@ func convertArrayProduct(products []db.Product) []*models.Product {
 }
 
 func convertProduct(product *db.Product) *models.Product {
+	var url string
+	if product.Avatar.String != "" {
+		url = "/" + filestorage.GetPathForId(product.ID) + "/" + product.Avatar.String
+	}
+
 	return &models.Product{
 		Apply: swag.String(product.Apply),
 		Brand: &models.Brand{
@@ -121,6 +126,6 @@ func convertProduct(product *db.Product) *models.Product {
 		ID:          models.ID(product.ID),
 		Name:        swag.String(product.Name),
 		Price:       swag.Int64(int64(product.Price)),
-		AvatarURL:   "/" + filestorage.GetPathForId(product.ID) + "/" + product.Avatar.String,
+		AvatarURL:   url,
 	}
 }
