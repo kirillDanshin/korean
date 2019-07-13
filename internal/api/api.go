@@ -4,6 +4,7 @@ import (
 	"github.com/ZergsLaw/korean/internal/api/models"
 	"github.com/ZergsLaw/korean/internal/api/restapi"
 	"github.com/ZergsLaw/korean/internal/db"
+	"github.com/ZergsLaw/korean/internal/filestorage"
 	"github.com/ZergsLaw/korean/internal/session"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime/security"
@@ -115,12 +116,15 @@ func convertArrayProduct(serverHOST string, products []db.Product) []*models.Pro
 
 func convertProduct(serverHOST string, product *db.Product) *models.Product {
 	return &models.Product{
-		Apply:       swag.String(product.Apply),
-		BrandName:   swag.String(product.Brand),
+		Apply: swag.String(product.Apply),
+		Brand: &models.Brand{
+			ID:   models.ID(product.Brand.Id),
+			Name: swag.String(product.Brand.Name),
+		},
 		Description: swag.String(product.Description),
 		ID:          models.ID(product.ID),
 		Name:        swag.String(product.Name),
 		Price:       swag.Int64(int64(product.Price)),
-		AvatarURL:   serverHOST + product.Avatar.String,
+		AvatarURL:   serverHOST + filestorage.GetPathForId(product.ID) + "/" + product.Avatar.String,
 	}
 }

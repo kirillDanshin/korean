@@ -377,7 +377,7 @@ func init() {
         "description",
         "apply",
         "price",
-        "brandName"
+        "brand"
       ],
       "properties": {
         "apply": {
@@ -386,8 +386,8 @@ func init() {
         "avatarUrl": {
           "type": "string"
         },
-        "brandName": {
-          "type": "string"
+        "brand": {
+          "$ref": "#/definitions/Brand"
         },
         "description": {
           "type": "string"
@@ -920,7 +920,7 @@ func init() {
         "description",
         "apply",
         "price",
-        "brandName"
+        "brand"
       ],
       "properties": {
         "apply": {
@@ -929,8 +929,8 @@ func init() {
         "avatarUrl": {
           "type": "string"
         },
-        "brandName": {
-          "type": "string"
+        "brand": {
+          "$ref": "#/definitions/Brand"
         },
         "description": {
           "type": "string"

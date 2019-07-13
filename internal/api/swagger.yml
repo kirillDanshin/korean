@@ -231,7 +231,7 @@ definitions:
       - description
       - apply
       - price
-      - brandName
+      - brand
     properties:
       id:
         $ref: '#/definitions/ID'
@@ -247,8 +247,8 @@ definitions:
         type: integer
       avatarUrl:
         type: string
-      brandName:
-        type: string
+      brand:
+        $ref: '#/definitions/Brand'
 
   LoginInfo:
     type: object

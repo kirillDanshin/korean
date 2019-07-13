@@ -55,7 +55,7 @@ type (
 		Apply       string         `db:"apply"`
 		Price       int            `db:"price"`
 		Avatar      sql.NullString `db:"avatar"`
-		Brand       string         `db:"brand_name"`
+		Brand
 	}
 	// NewProduct - model for creating new product in storage.
 	NewProduct struct {
@@ -124,6 +124,7 @@ func (db *db) getProductByID(ctx Ctx, id int) (*Product, error) {
 		"," + tableProduct.name + "." + tableProduct.columnName +
 		"," + tableProduct.name + "." + tableProduct.columnAvatar +
 		"," + tableBrand.name + "." + tableBrand.columnName + " AS brand_name" +
+		"," + tableBrand.name + "." + tableBrand.columnID + " AS brand_id" +
 		" FROM " + tableProduct.name +
 		" LEFT JOIN " + tableBrand.name +
 		" ON " + tableProduct.name + ".brand_id" +
@@ -177,6 +178,7 @@ func (db *db) products(ctx Ctx, pagination Pagination) ([]Product, error) {
 		"," + tableProduct.name + "." + tableProduct.columnName +
 		"," + tableProduct.name + "." + tableProduct.columnAvatar +
 		"," + tableBrand.name + "." + tableBrand.columnName + " AS brand_name" +
+		"," + tableBrand.name + "." + tableBrand.columnID + " AS brand_id" +
 		" FROM " + tableProduct.name +
 		" LEFT JOIN " + tableBrand.name +
 		" ON " + tableProduct.name + ".brand_id" +
@@ -195,6 +197,7 @@ func (db *db) productsByBrand(ctx Ctx, brandID int, pagination Pagination) ([]Pr
 		"," + tableProduct.name + "." + tableProduct.columnName +
 		"," + tableProduct.name + "." + tableProduct.columnAvatar +
 		"," + tableBrand.name + "." + tableBrand.columnName + " AS brand_name" +
+		"," + tableBrand.name + "." + tableBrand.columnID + " AS brand_id" +
 		" FROM " + tableProduct.name +
 		" LEFT JOIN " + tableBrand.name +
 		" ON " + tableProduct.name + ".brand_id" +

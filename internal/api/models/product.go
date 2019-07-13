@@ -24,9 +24,9 @@ type Product struct {
 	// avatar Url
 	AvatarURL string `json:"avatarUrl,omitempty"`
 
-	// brand name
+	// brand
 	// Required: true
-	BrandName *string `json:"brandName"`
+	Brand *Brand `json:"brand"`
 
 	// description
 	// Required: true
@@ -55,7 +55,7 @@ func (m *Product) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateBrandName(formats); err != nil {
+	if err := m.validateBrand(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -90,10 +90,19 @@ func (m *Product) validateApply(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Product) validateBrandName(formats strfmt.Registry) error {
+func (m *Product) validateBrand(formats strfmt.Registry) error {
 
-	if err := validate.Required("brandName", "body", m.BrandName); err != nil {
+	if err := validate.Required("brand", "body", m.Brand); err != nil {
 		return err
+	}
+
+	if m.Brand != nil {
+		if err := m.Brand.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("brand")
+			}
+			return err
+		}
 	}
 
 	return nil

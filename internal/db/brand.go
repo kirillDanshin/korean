@@ -10,16 +10,16 @@ var tableBrand = struct {
 	columnID       string
 	columnName     string
 	columnIsDelete string
-}{name: "brands", columnID: "brand_id", columnName: "name", columnIsDelete: "is_delete"}
+}{name: "brands", columnID: "brand_id", columnName: "brand_name", columnIsDelete: "is_delete"}
 
 const (
 	schemeTableBrands = `create table if not exists brands
 (
     brand_id        	 serial primary key,
-    name     		 	 text not null,
+    brand_name     		 text not null,
 	is_delete            boolean DEFAULT false,
 	created_at 		 	 TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);  CREATE UNIQUE INDEX if not exists brands_unique_name ON brands(name) WHERE is_delete = false;`
+);  CREATE UNIQUE INDEX if not exists brands_unique_name ON brands(brand_name) WHERE is_delete = false;`
 )
 
 type (
@@ -30,7 +30,7 @@ type (
 
 	Brand struct {
 		Id   int    `db:"brand_id"`
-		Name string `db:"name"`
+		Name string `db:"brand_name"`
 	}
 )
 
