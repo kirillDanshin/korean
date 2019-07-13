@@ -135,8 +135,6 @@ func (db *db) getProductByID(ctx Ctx, id int) (*Product, error) {
 		return nil, errors.Wrapf(err, "failed to getting product by id")
 	}
 
-	p.Avatar.String = filestorage.GetPathForId(p.ID) + "/" + p.Avatar.String
-
 	return p, nil
 }
 

@@ -26,7 +26,7 @@ func (api *service) productsGET(params operations.ListProductParams) operations.
 			WithPayload(createErr(http.StatusInternalServerError))
 	}
 
-	return operations.NewListProductOK().WithPayload(convertArrayProduct(api.serverHOST, products))
+	return operations.NewListProductOK().WithPayload(convertArrayProduct(products))
 }
 
 func intPoint(point *int64) int {

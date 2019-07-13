@@ -16,5 +16,5 @@ func (api *service) productGET(params operations.ProductParams) operations.Produ
 			WithPayload(createErr(http.StatusInternalServerError))
 	}
 
-	return operations.NewProductOK().WithPayload(convertProduct(api.serverHOST, product))
+	return operations.NewProductOK().WithPayload(convertProduct(product))
 }

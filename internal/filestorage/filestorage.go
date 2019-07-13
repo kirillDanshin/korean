@@ -65,5 +65,5 @@ func GetPathForId(ID int) string {
 	second := defaultDate[3:6]
 	third := defaultDate[6:9]
 
-	return fmt.Sprintf("d%s/d%s/d%s", first, second, third)
+	return fmt.Sprintf(upload+"/"+productAvatarDir+"/d%s/d%s/d%s", first, second, third)
 }
