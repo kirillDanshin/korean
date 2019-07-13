@@ -25,7 +25,7 @@ type (
 )
 
 func SaveAvatar(ctx Ctx, productID int, avatarFile io.ReadCloser) (fileName string, err error) {
-	dirPath := filepath.Join(upload, productAvatarDir, GetPathForId(productID))
+	dirPath := GetPathForId(productID)
 	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 		return "", errors.Wrapf(err, "failed to create dir")
 	}
@@ -65,5 +65,5 @@ func GetPathForId(ID int) string {
 	second := defaultDate[3:6]
 	third := defaultDate[6:9]
 
-	return fmt.Sprintf(upload+"/"+productAvatarDir+"/d%s/d%s/d%s", first, second, third)
+	return filepath.Join(upload, productAvatarDir, fmt.Sprintf("/d%s/d%s/d%s", first, second, third))
 }
